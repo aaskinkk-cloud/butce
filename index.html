@@ -256,6 +256,25 @@ details.kart>summary .ic{margin-right:2px}
 .kaynak{font-size:14.5px}
 @media (max-width:360px){.fgrid{grid-template-columns:1fr 36px 52px 72px 28px 20px}.kalem{grid-template-columns:1fr 84px 28px 20px;padding-left:8px}}
 
+/* ---- 1.3: bölüm gövdeleri başlık renginde çok hafif pastel ---- */
+.bol,.band{background:color-mix(in srgb,var(--sb) 32%,var(--kart))}
+.bol .kalem,.bol .th,.bol .tb td,.bol .tb th{border-bottom-color:color-mix(in srgb,var(--sf) 13%,transparent)}
+.bol .ekle{border-top-color:color-mix(in srgb,var(--sf) 22%,transparent);color:var(--sf)}
+.bol .alt-top{background:color-mix(in srgb,var(--sb) 70%,var(--kart))}
+.bol .bol-arac button{background:color-mix(in srgb,var(--sb) 25%,var(--kart));border-color:color-mix(in srgb,var(--sf) 20%,transparent)}
+.bol .bol-arac button.on{background:var(--ana);border-color:var(--ana)}
+.bol .th{color:color-mix(in srgb,var(--sf) 70%,var(--soluk))}
+.bol .hc:focus{background:var(--kart)}
+.bol .ck{background:color-mix(in srgb,var(--sb) 15%,var(--kart))}
+.bol .ck:checked{background:var(--ana)}
+.bol .kalem.yesil{background:var(--yesilz)}
+.band-ic{background:transparent}
+.zar{width:44px;height:38px;padding:0;display:grid;place-items:center}
+.zar .ic{width:23px;height:23px;margin:0}
+.btn.ikon{width:44px;padding:0;display:grid;place-items:center}.btn.ikon .ic{width:22px;height:22px;margin:0}
+:root[data-theme="dark"] .bol,:root[data-theme="dark"] .band{background:color-mix(in srgb,var(--sb) 7%,var(--kart))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bol,:root:not([data-theme="light"]) .band{background:color-mix(in srgb,var(--sb) 7%,var(--kart))}}
+
 </style>
 </head>
 <body>
@@ -287,6 +306,8 @@ details.kart>summary .ic{margin-right:2px}
 <symbol id="i-yapistir" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5V3.5h6v1M9 4.5v1.8h6V4.5"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></symbol>
 <symbol id="i-temizle" viewBox="0 0 24 24"><path d="m14.5 4.5 5 5-9 9H5.5v-5z"/><path d="M10.5 18.5H20"/></symbol>
 <symbol id="i-kapat" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-zikircek" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.3"/><circle cx="17.7" cy="6.3" r="1.3"/><circle cx="20" cy="12" r="1.3"/><circle cx="17.7" cy="17.7" r="1.3"/><circle cx="12" cy="20" r="1.3"/><circle cx="6.3" cy="17.7" r="1.3"/><path d="M4.1 12.2A8 8 0 0 1 7.2 5.6"/><path d="M4.4 5.1l2.8.5-.4 2.8"/></symbol>
+<symbol id="i-tamekran" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></symbol>
 </defs>
 </svg>
 <header class="top">
@@ -305,7 +326,7 @@ details.kart>summary .ic{margin-right:2px}
 <script>
 (function(){
 'use strict';
-const SURUM='1.2';
+const SURUM='1.3';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -357,7 +378,7 @@ function kaydet(hemen){
   const f=()=>{try{D.meta.son=Date.now();localStorage.setItem(KEY,JSON.stringify(D))}catch(e){if(!kaydet.uyardi){kaydet.uyardi=1;toast('Kaydedilemedi: bu ortamda kalıcı depolama yok ya da dolu. Menü → Yedek indir')}}};
   if(hemen)f();else kT=setTimeout(f,150);
 }
-function uiKaydet(){try{localStorage.setItem(UKEY,JSON.stringify({tab:U.tab,tema:U.tema}))}catch(e){}}
+function uiKaydet(){try{localStorage.setItem(UKEY,JSON.stringify({tab:U.tab,tema:U.tema,tamEkran:U.tamEkran!==false}))}catch(e){}}
 /* Geri alma: silmeden önce anlık kopya */
 let geriKopya=null;
 function anlik(){geriKopya=JSON.stringify(D)}
@@ -430,13 +451,13 @@ function sayacHtml(z,buyuk){
 function zBandHtml(){
   const z=D.zikirler.find(x=>x.id===U.rz);
   return '<div class="band c-zikir'+(U.zAcik?' acik':'')+'"><div class="band-bas" onclick="A.zBand()"><b><svg class="ic"><use href="#i-zikir"/></svg>ZİKİR ÇEK</b><span class="oz">'+esc(z?z.ad:'Zikir yok')+'</span>'+
-    '<button class="zar" onclick="event.stopPropagation();A.zZar()">Başka zikir</button></div>'+
+    '<button class="zar" onclick="event.stopPropagation();A.zZar()" aria-label="Rastgele zikir çek" title="Rastgele zikir çek"><svg class="ic"><use href="#i-zikircek"/></svg></button></div>'+
     '<div class="band-ic">'+(z?'<span class="kat">'+esc(z.kat)+'</span><h3 class="okuma-bas">'+esc(z.ad)+'</h3><p class="okuma">'+esc(z.metin)+'</p>'+sayacHtml(z,true):'<div class="bos">Zikir sekmesinden kayıt ekle</div>')+'</div></div>';
 }
 function aBandHtml(){
   const q=D.alintilar.find(x=>x.id===U.ra);if(!q)return '';
   return '<div class="band c-alis'+(U.aAcik?' acik':'')+'"><div class="band-bas" onclick="A.aBand()"><b><svg class="ic"><use href="#i-alinti"/></svg>ALINTI</b><span class="oz">'+esc(q.metin.split('\n')[0])+'</span>'+
-    '<button class="zar" onclick="event.stopPropagation();A.aZar()">Başka</button></div>'+
+    '<button class="zar" onclick="event.stopPropagation();A.aZar()" aria-label="Rastgele alıntı" title="Rastgele alıntı"><svg class="ic"><use href="#i-yenile"/></svg></button></div>'+
     '<div class="band-ic"><p class="okuma">'+esc(q.metin)+'</p>'+(q.kaynak?'<div class="kaynak">— '+esc(q.kaynak)+'</div>':'')+'</div></div>';
 }
 function butceHtml(){
@@ -602,7 +623,7 @@ function ustAracHtml(tip,kats,liste,kat,ara){
   const say=k=>k==='hepsi'?liste.length:k==='favori'?liste.filter(x=>x.fav).length:liste.filter(x=>x.kat===k).length;
   return '<div class="kart" style="padding:10px"><div class="satir"><input class="inp" style="flex:1 1 160px" type="search" placeholder="Ara…" value="'+esc(ara)+'" oninput="A.ara(\''+tip+'\',this.value)">'+
     '<button class="btn ana" onclick="A.lEkle(\''+tip+'\')">+ Yeni</button><button class="btn" onclick="A.toplu(\''+tip+'\')"><svg class="ic"><use href="#i-yapistir"/></svg>Toplu yapıştır</button>'+
-    '<button class="btn" onclick="A.lZar(\''+tip+'\')">'+(tip==='z'?'<svg class="ic"><use href="#i-zikir"/></svg>Zikir çek':'<svg class="ic"><use href="#i-yenile"/></svg>Rastgele')+'</button></div></div>'+
+    '<button class="btn ikon" onclick="A.lZar(\''+tip+'\')" aria-label="'+(tip==='z'?'Rastgele zikir çek':'Rastgele alıntı')+'" title="'+(tip==='z'?'Rastgele zikir çek':'Rastgele alıntı')+'">'+(tip==='z'?'<svg class="ic"><use href="#i-zikircek"/></svg>':'<svg class="ic"><use href="#i-yenile"/></svg>')+'</button></div></div>'+
     '<div class="ciplar">'+['hepsi','favori'].concat(kats).filter(k=>k==='hepsi'||k==='favori'||say(k)).map(k=>'<button class="cip'+(kat===k?' on':'')+'" onclick="A.kat(\''+tip+'\',\''+esc(k)+'\')">'+(k==='hepsi'?'Tümü':k==='favori'?'★ Favoriler':esc(k))+'<small>'+say(k)+'</small></button>').join('')+'</div>';
 }
 function zikirHtml(){
@@ -615,7 +636,7 @@ function alintiHtml(){
 }
 function oneCikanHtml(tip){
   const x=(tip==='z'?D.zikirler:D.alintilar).find(y=>y.id===(tip==='z'?U.zOne:U.aOne));if(!x)return '';
-  return '<div class="band acik '+(tip==='z'?'c-zikir':'c-alis')+'"><div class="band-bas" onclick="A.oneKapat(\''+tip+'\')"><b>'+(tip==='z'?'<svg class="ic"><use href="#i-zikir"/></svg>ZİKİR ÇEK':'<svg class="ic"><use href="#i-alinti"/></svg>RASTGELE')+'</b><span class="oz"></span><button class="zar" onclick="event.stopPropagation();A.lZar(\''+tip+'\')">'+(tip==='z'?'Başka zikir':'Başka')+'</button><button class="zar" onclick="event.stopPropagation();A.oneKapat(\''+tip+'\')" aria-label="Kapat"><svg class="ic"><use href="#i-kapat"/></svg></button></div><div class="band-ic">'+
+  return '<div class="band acik '+(tip==='z'?'c-zikir':'c-alis')+'"><div class="band-bas"><b>'+(tip==='z'?'<svg class="ic"><use href="#i-zikir"/></svg>ZİKİR ÇEK':'<svg class="ic"><use href="#i-alinti"/></svg>RASTGELE')+'</b><span class="oz"></span><button class="zar" onclick="A.lZar(\''+tip+'\')" aria-label="'+(tip==='z'?'Rastgele zikir çek':'Rastgele alıntı')+'">'+(tip==='z'?'<svg class="ic"><use href="#i-zikircek"/></svg>':'<svg class="ic"><use href="#i-yenile"/></svg>')+'</button></div><div class="band-ic">'+
     (tip==='z'?'<span class="kat">'+esc(x.kat)+'</span><h3 class="okuma-bas">'+esc(x.ad)+'</h3><p class="okuma">'+esc(x.metin)+'</p>'+sayacHtml(x,true)
       :'<span class="kat">'+esc(x.kat)+'</span><p class="okuma">'+esc(x.metin)+'</p>'+(x.kaynak?'<div class="kaynak">— '+esc(x.kaynak)+'</div>':''))+'</div></div>';
 }
@@ -1016,12 +1037,14 @@ const A={
     sheet('<h3>Menü</h3><div class="liste">'+
     '<button onclick="A.kopyalaSekme()"><svg class="ic"><use href="#i-kopya"/></svg>Bu sekmeyi kopyala (Excel\'e yapışır)</button><button onclick="A.yazdir()"><svg class="ic"><use href="#i-yazdir"/></svg>Bu sekmeyi yazdır / PDF</button>'+
     '<button onclick="A.yedekIndir()"><svg class="ic"><use href="#i-indir"/></svg>Yedek indir</button><button onclick="document.getElementById(\'yedekIn\').click()"><svg class="ic"><use href="#i-yukle"/></svg>Yedekten geri yükle</button>'+
+    '<button onclick="A.tamEkranAyar()"><svg class="ic"><use href="#i-tamekran"/></svg>Tam ekran: '+(U.tamEkran===false?'kapalı':'açık')+'</button>'+
     '<button onclick="A.tema()"><svg class="ic"><use href="#i-tema"/></svg>Tema: '+({auto:'Otomatik',light:'Açık',dark:'Koyu'}[U.tema||'auto'])+'</button>'+
     '<button onclick="A.guncelle()"><svg class="ic"><use href="#i-yenile"/></svg>Güncellemeyi denetle</button>'+
     '<button onclick="A.ornek()"><svg class="ic"><use href="#i-sifirla"/></svg>Örnek veriyi yeniden yükle</button></div>'+
     '<div class="not">Son yedek: '+(y==null?'hiç alınmadı':y===0?'bugün':y+' gün önce')+'. Kayıtlar yalnız bu telefonda tutulur; ayda bir yedek indirmen önerilir.</div>'+
     '<div class="not">Bütçe &amp; Hedef · sürüm '+SURUM+' · çevrimdışı çalışır</div>')},
   kopyalaSekme:()=>{kopyala(metinCikti());kapat()},yazdir,yedekIndir,yedekYukle,
+  tamEkranAyar:()=>{U.tamEkran=U.tamEkran===false;uiKaydet();if(U.tamEkran)tamEkran();else{try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}A.menu()},
   tema:()=>{const s=['auto','light','dark'];U.tema=s[(s.indexOf(U.tema||'auto')+1)%3];temaUygula();uiKaydet();A.menu()},
   guncelle:()=>{const r=window.__swReg;kapat();if(!r){toast('Güncelleme yalnız kurulu uygulamada denetlenir');return}
     toast('Denetleniyor…');r.update().then(()=>{setTimeout(()=>{if(r.waiting||r.installing)toast('Yeni sürüm iniyor; birazdan "Yenile" çıkacak');else toast('Uygulama güncel · sürüm '+SURUM)},1500)}).catch(()=>toast('İnternet yok; sonra tekrar dene'))},
@@ -1030,6 +1053,13 @@ const A={
 };
 window.A=A;
 
+/* Tam ekran: tarayıcı ilk dokunuştan önce izin vermez; her dokunuşta gerekiyorsa açılır */
+function tamEkran(){
+  if(U.tamEkran===false||document.fullscreenElement)return;
+  try{if(matchMedia('(display-mode: fullscreen)').matches)return}catch(e){}
+  const de=document.documentElement;if(!de.requestFullscreen)return;
+  de.requestFullscreen({navigationUI:'hide'}).catch(()=>{});
+}
 function temaUygula(){const t=U.tema||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=(t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'#141816':'#f3f0e8'}
 
@@ -1037,7 +1067,9 @@ function temaUygula(){const t=U.tema||'auto';if(t==='auto')document.documentElem
 (function(){
   let u={};try{u=JSON.parse(localStorage.getItem(UKEY)||'{}')}catch(e){}
   U={tab:SEKMELER.some(s=>s[0]===u.tab)?u.tab:'butce',tema:u.tema||'auto',suz:{},zKat:'hepsi',zAra:'',aKat:'hepsi',aAra:'',hf:'hepsi',zAcik:false,aAcik:false,duzen:null};
-  temaUygula();
+  temaUygula();U.tamEkran=u.tamEkran!==false;
+  document.addEventListener('pointerup',e=>{if(e.target&&e.target.closest&&e.target.closest('input[type=file],#yedekIn'))return;tamEkran()},{passive:true});
+  tamEkran();
   D=yukle();zSec();aSec();ciz();
   $('#yedekIn').addEventListener('change',e=>{yedekYukle(e.target.files[0]);e.target.value=''});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){kapat();$('#hm').hidden=true}});
