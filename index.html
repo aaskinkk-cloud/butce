@@ -310,6 +310,34 @@ details.kart>summary .ic{margin-right:2px}
 .ozet:not(.uc)>div:nth-child(1){background:color-mix(in srgb,#f7e2e5 55%,var(--kart))}
 .ozet:not(.uc)>div:nth-child(3){background:color-mix(in srgb,#e1eaf6 55%,var(--kart))}
 
+/* ---- 1.5: Zikir sayfası tarzı — beyaz kartlar, renkli sol şerit; yazılar bir tık küçük ---- */
+.bol,.band,.donem{background:var(--kart);border:1px solid var(--kenar);border-left:5px solid var(--sf);box-shadow:var(--golge)}
+.bol-bas,.band-bas{background:transparent;color:var(--sf);border-bottom:1px solid var(--kenar)}
+.bol.kapali .bol-bas,.band:not(.acik) .band-bas{border-bottom:0}
+.bol .kalem,.bol .th,.bol .tb td,.bol .tb th{border-bottom-color:var(--kenar)}
+.bol .ekle{border-top-color:var(--kenar);color:var(--ana)}
+.bol .alt-top{background:var(--bg)}
+.bol .bol-arac button{background:var(--kart);border-color:var(--kenar)}
+.bol .ck{background:var(--kart)}
+.bol .th{color:var(--soluk)}
+.donem-sec{color:var(--yazi)}
+.donem-maas span{color:var(--soluk)}
+.zar{background:var(--bg)}
+:root[data-theme="dark"] .bol,:root[data-theme="dark"] .band,:root[data-theme="dark"] .donem{background:var(--kart);border-left-color:color-mix(in srgb,var(--sf) 55%,#fff)}
+:root[data-theme="dark"] .bol-bas,:root[data-theme="dark"] .band-bas{background:transparent}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bol,:root:not([data-theme="light"]) .band,:root:not([data-theme="light"]) .donem{background:var(--kart);border-left-color:color-mix(in srgb,var(--sf) 55%,#fff)}
+ :root:not([data-theme="light"]) .bol-bas,:root:not([data-theme="light"]) .band-bas{background:transparent}}
+body{font-size:16px}
+.hc{font-size:15.5px}
+.ozet b{font-size:16.5px}.ozet span{font-size:11px}
+.bol-ad{font-size:15px}.bol-top b{font-size:16px}.bol-top i{font-size:12px}
+.bol-arac button{font-size:12.5px}
+.okuma{font-size:17px}.zk .okuma{font-size:16px}.zk-ust h3{font-size:16.5px}
+.tb{font-size:14.5px}.cip{font-size:13.5px}.ipucu{font-size:12.5px}.kaynak{font-size:13.5px}
+.donem-sec{font-size:16px}.donem-maas input{font-size:17.5px}
+.tabs button{font-size:11.5px}.tabs .tab-ic{width:23px;height:23px}
+.brand b{font-size:20px}
+
 </style>
 </head>
 <body>
@@ -362,7 +390,7 @@ details.kart>summary .ic{margin-right:2px}
 <script>
 (function(){
 'use strict';
-const SURUM='1.4';
+const SURUM='1.5';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1079,6 +1107,7 @@ const A={
     '<button onclick="A.tamEkranAyar()"><svg class="ic"><use href="#i-tamekran"/></svg>Tam ekran: '+(U.tamEkran===false?'kapalı':'açık')+'</button>'+
     '<button onclick="A.tema()"><svg class="ic"><use href="#i-tema"/></svg>Tema: '+({auto:'Otomatik',light:'Açık',dark:'Koyu'}[U.tema||'auto'])+'</button>'+
     '<button onclick="A.guncelle()"><svg class="ic"><use href="#i-yenile"/></svg>Güncellemeyi denetle</button>'+
+    '<button onclick="A.ornekDugun()"><svg class="ic"><use href="#i-dugun"/></svg>Yalnız Düğünler örnek verisini yükle</button>'+
     '<button onclick="A.ornek()"><svg class="ic"><use href="#i-sifirla"/></svg>Örnek veriyi yeniden yükle</button></div>'+
     '<div class="not">Son yedek: '+(y==null?'hiç alınmadı':y===0?'bugün':y+' gün önce')+'. Kayıtlar yalnız bu telefonda tutulur; ayda bir yedek indirmen önerilir.</div>'+
     '<div class="not">Bütçe &amp; Hedef · sürüm '+SURUM+' · çevrimdışı çalışır</div>')},
@@ -1087,6 +1116,8 @@ const A={
   tema:()=>{const s=['auto','light','dark'];U.tema=s[(s.indexOf(U.tema||'auto')+1)%3];temaUygula();uiKaydet();A.menu()},
   guncelle:()=>{const r=window.__swReg;kapat();if(!r){toast('Güncelleme yalnız kurulu uygulamada denetlenir');return}
     toast('Denetleniyor…');r.update().then(()=>{setTimeout(()=>{if(r.waiting||r.installing)toast('Yeni sürüm iniyor; birazdan "Yenile" çıkacak');else toast('Uygulama güncel · sürüm '+SURUM)},1500)}).catch(()=>toast('İnternet yok; sonra tekrar dene'))},
+  ornekDugun:()=>{if(!confirm('Yalnız Düğünler sayfası örnek veriye döner; diğer sayfalara dokunulmaz.\n\nŞu anki düğün kayıtları ('+D.dugun.kayitlar.length+') değiştirilecek. Devam edilsin mi?'))return;
+    anlik();D.dugun=seed().dugun;kaydet(true);kapat();U.tab='dugun';uiKaydet();ciz();geriAlToast('Düğünler örnek verisi yüklendi')},
   ornek:()=>{if(!confirm('Örnek veriler yüklenecek ve şu anki TÜM kayıtların yerini alacak.\n\nÖnce yedek indirmen önerilir. Devam edilsin mi?'))return;anlik();D=seed();kaydet(true);zSec();aSec();kapat();ciz();geriAlToast('Örnek veriler yüklendi')},
   kapat
 };
