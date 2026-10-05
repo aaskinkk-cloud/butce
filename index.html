@@ -236,10 +236,11 @@ details.kart>summary .ic{margin-right:2px}
 .ck:focus-visible{outline:2px solid var(--ana);outline-offset:2px}
 :root[data-theme="dark"] .ck:checked::after{border-color:#0f1a16}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ck:checked::after{border-color:#0f1a16}}
-.kalem{grid-template-columns:1fr 92px 30px 22px;padding:3px 6px 3px 12px;gap:4px}
+.kalem{grid-template-columns:1fr minmax(92px,6.4em) 30px 22px;padding:3px 6px 3px 12px;gap:4px}
 .fgrid{grid-template-columns:1fr 42px 58px 80px 30px 22px}
-.f2grid{grid-template-columns:1fr 92px 30px 22px}
-.hgrid{grid-template-columns:1fr 18px 84px 30px 22px}
+.f2grid{grid-template-columns:1fr minmax(92px,6.4em) 30px 22px}
+.hgrid{grid-template-columns:1fr 18px minmax(84px,6.4em) 30px 22px}
+.hgrid.th span:nth-child(3){text-align:right!important;padding-right:6px}.hgrid.th span:nth-child(4){text-align:center}
 .th span{text-align:left}
 .th span:nth-child(n+2){text-align:right}
 .th span:nth-last-child(2){text-align:center}
@@ -258,6 +259,19 @@ details.kart>summary .ic{margin-right:2px}
 
 /* ---- 1.3: bölüm gövdeleri başlık renginde çok hafif pastel ---- */
 .bol,.band{background:color-mix(in srgb,var(--sb) 32%,var(--kart))}
+/* 1.7: her bölüm ayrı, silik pastel renk */
+.c-p0{--sb:#f6e6e2;--sf:#8a3f33}
+.c-p1{--sb:#e4edf7;--sf:#2f5684}
+.c-p2{--sb:#f5efd6;--sf:#7a6114}
+.c-p3{--sb:#e3f1e7;--sf:#2e6a44}
+.c-p4{--sb:#efe5f5;--sf:#62448a}
+.c-p5{--sb:#e0f0ef;--sf:#22665f}
+.c-p6{--sb:#f8e7d6;--sf:#86501f}
+.c-p7{--sb:#e8eaf7;--sf:#454f8c}
+.c-p8{--sb:#f3e4ec;--sf:#86385d}
+.c-p9{--sb:#eaf2dc;--sf:#4b6a1f}
+.c-p10{--sb:#e3eef4;--sf:#2c6075}
+.c-p11{--sb:#f1ebe2;--sf:#6a5236}
 .bol .kalem,.bol .th,.bol .tb td,.bol .tb th{border-bottom-color:color-mix(in srgb,var(--sf) 13%,transparent)}
 .bol .ekle{border-top-color:color-mix(in srgb,var(--sf) 22%,transparent);color:var(--sf)}
 .bol .alt-top{background:color-mix(in srgb,var(--sb) 70%,var(--kart))}
@@ -376,6 +390,7 @@ body{font-size:16px}
 </svg>
 <header class="top">
   <div class="brand"><b>Bütçe &amp; Hedef</b><small>Aylık bütçe · fındık sarfı · hedefler · zikir · alıntılar</small></div>
+  <button class="ib" id="anaBtn" hidden onclick="anaSayfa()" aria-label="Ana sayfa (Milli Emlak)" title="Ana sayfa — Milli Emlak"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></button>
   <button class="ib" onclick="A.hmAc()" aria-label="Hesap makinesi"><svg class="ic"><use href="#i-calc"/></svg></button>
   <button class="ib" onclick="A.menu()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
 </header>
@@ -390,7 +405,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='1.5';
+const SURUM='1.7';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -418,7 +433,7 @@ let D,U;
 function yukle(){
   let d=null;
   try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){d=null}
-  if(!d||typeof d!=='object'){d=seed();D=d;kaydet(true)}
+  if(!d||typeof d!=='object'){d=seed();d.meta={olusturma:Date.now(),yedek:0,tohum:true};D=d;kaydet.tohum=1;kaydet(true);kaydet.tohum=0}
   return onar(d);
 }
 function onar(d){
@@ -433,16 +448,17 @@ function onar(d){
   if(!d.dugun)d.dugun={guncelUsd:'',kayitlar:[]};if(!Array.isArray(d.dugun.kayitlar))d.dugun.kayitlar=[];
   if(!Array.isArray(d.zikirler))d.zikirler=[];
   if(!Array.isArray(d.alintilar))d.alintilar=[];
+  if(!Array.isArray(d.okurAtla))d.okurAtla=[];
   if(!d.meta)d.meta={olusturma:Date.now(),yedek:0};
   return d;
 }
 let kT=null;
 function kaydet(hemen){
   clearTimeout(kT);
-  const f=()=>{try{D.meta.son=Date.now();localStorage.setItem(KEY,JSON.stringify(D))}catch(e){if(!kaydet.uyardi){kaydet.uyardi=1;toast('Kaydedilemedi: bu ortamda kalıcı depolama yok ya da dolu. Menü → Yedek indir')}}};
+  const f=()=>{const ic=icImza();if(ic===kaydet._son&&!kaydet.tohum)return;kaydet._son=ic;if(!kaydet.tohum&&D.meta)D.meta.tohum=false;try{D.meta.son=Date.now();localStorage.setItem(KEY,JSON.stringify(D))}catch(e){if(!kaydet.uyardi&&!Kopru.bagli){kaydet.uyardi=1;toast('Kaydedilemedi: bu ortamda kalıcı depolama yok ya da dolu. Menü → Yedek indir')}}try{if(!kaydet.tohum)Kopru.gonder(hemen)}catch(e){}};
   if(hemen)f();else kT=setTimeout(f,150);
 }
-function uiKaydet(){try{localStorage.setItem(UKEY,JSON.stringify({tab:U.tab,tema:U.tema,tamEkran:U.tamEkran!==false}))}catch(e){}}
+function uiKaydet(){try{localStorage.setItem(UKEY,JSON.stringify({tab:U.tab,tema:U.tema,tamEkran:U.tamEkran!==false,anaAdres:U.anaAdres||''}))}catch(e){}}
 /* Geri alma: silmeden önce anlık kopya */
 let geriKopya=null;
 function anlik(){geriKopya=JSON.stringify(D)}
@@ -461,7 +477,7 @@ const SEKMELER=[['butce','Bütçe','butce'],['findik','Fındık','findik'],['hed
 function tabsCiz(){$('#tabs').innerHTML=SEKMELER.map(s=>'<button class="'+(U.tab===s[0]?'on':'')+'" onclick="A.sekme(\''+s[0]+'\')"><svg class="ic tab-ic"><use href="#i-'+s[2]+'"/></svg>'+s[1]+'</button>').join('')}
 function sekme(t){
   if(t===U.tab){window.scrollTo({top:0,behavior:'smooth'});return}
-  U.tab=t;uiKaydet();if(t==='butce'){zSec();aSec()}
+  U.tab=t;uiKaydet();if(t==='butce'){zSec();aSec()}if(t==='alinti')setTimeout(()=>okurAl(),0);
   ciz();window.scrollTo(0,0);
 }
 function ciz(){
@@ -541,10 +557,11 @@ function butceHtml(){
   return h;
 }
 function bolumHtml(b){
+  const bix=Math.max(0,ay().bolumler.indexOf(b));
   const plan=planMi(b),suz=U.suz[b.id]||'hepsi';let it=0,io=0;
   b.kalemler.forEach(k=>{const t=N(k.tutar);it+=t;if(k.odendi)io+=t});
   const kal=b.kalemler.filter(k=>suz==='hepsi'||(suz==='isaretli'?k.odendi:!k.odendi));
-  return '<section class="bol '+renk(b.ad)+(b.kapali?' kapali':'')+'"><div class="bol-bas" onclick="A.bolAc(\''+b.id+'\')"><span class="ok">▸</span><b class="bol-ad">'+esc(b.ad)+'</b>'+
+  return '<section class="bol c-p'+(bix%12)+(b.kapali?' kapali':'')+'"><div class="bol-bas" onclick="A.bolAc(\''+b.id+'\')"><span class="ok">▸</span><b class="bol-ad">'+esc(b.ad)+'</b>'+
     (plan?'<span class="rozet">plan</span>':'')+'<span class="bol-top"><b id="bo-'+b.id+'">'+T0(io)+'</b><i>/ <span id="bt-'+b.id+'">'+T0(it)+'</span></i></span></div>'+
     '<div class="bol-ic"><div class="bol-arac"><button onclick="A.suz(\''+b.id+'\')" title="Süz">'+{hepsi:'Tümü',isaretli:'✓ İşaretli',isaretsiz:'○ İşaretsiz'}[suz]+'</button>'+
     '<button onclick="A.hepsiIsaret(\''+b.id+'\')" title="Hepsini işaretle">✓ Hepsi</button><button onclick="A.isaretKaldir(\''+b.id+'\')" title="İşaretleri kaldır">☐ Kaldır</button>'+
@@ -679,9 +696,9 @@ function dugunHtml(){
 }
 /* ==================== ZİKİR & ALINTI (ortak liste) ==================== */
 const ZKAT=['Dua','Zikir','Esma-ül Hüsna','Ayet / Sure','Salavat','Olumlama','Niyet','Şifa','Korunma'];
-const AKAT=['Hikmet','Tutumluluk','Emek','Sabır','Söz','Zaman','Doğa','Edebiyat','Kendi notum'];
+const AKAT=['Okur','Hikmet','Tutumluluk','Emek','Sabır','Söz','Zaman','Doğa','Edebiyat','Kendi notum'];
 const KRENK={'Dua':'#c9a646','Zikir':'#4f8a6e','Esma-ül Hüsna':'#7a63a8','Ayet / Sure':'#3f7aa6','Salavat':'#b7735a','Olumlama':'#d08a3c','Niyet':'#5f9aa0','Şifa':'#5a9a5a','Korunma':'#8a6b4f',
-  'Hikmet':'#5a7fa8','Tutumluluk':'#a8873a','Emek':'#8a6b4f','Sabır':'#4f8a6e','Söz':'#a0566e','Zaman':'#6a6fb0','Doğa':'#5a9a5a','Edebiyat':'#9a5ab0','Kendi notum':'#7a7a7a'};
+  'Okur':'#b0623f','Hikmet':'#5a7fa8','Tutumluluk':'#a8873a','Emek':'#8a6b4f','Sabır':'#4f8a6e','Söz':'#a0566e','Zaman':'#6a6fb0','Doğa':'#5a9a5a','Edebiyat':'#9a5ab0','Kendi notum':'#7a7a7a'};
 function listeFiltre(l,kat,ara,metinF){
   const q=(ara||'').toLocaleLowerCase('tr');
   return l.filter(x=>(kat==='hepsi'||(kat==='favori'?x.fav:x.kat===kat))&&(!q||metinF(x).toLocaleLowerCase('tr').indexOf(q)>-1));
@@ -1083,7 +1100,7 @@ const A={
   lKopya:(t,id)=>{kopyala(A.lMetin(t,id));kapat()},
   lPaylas:(t,id)=>{navigator.share({text:A.lMetin(t,id)}).catch(()=>{});kapat()},
   lTasi:(t,id,d)=>{const l=t==='z'?D.zikirler:D.alintilar,i=l.findIndex(x=>x.id===id),j=i+d;if(j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]];kaydet();kapat();ciz()},
-  lSil:(t,id)=>{const k=t==='z'?'zikirler':'alintilar';anlik();D[k]=D[k].filter(x=>x.id!==id);kaydet();kapat();ciz();geriAlToast('Silindi')},
+  lSil:(t,id)=>{const k=t==='z'?'zikirler':'alintilar';anlik();if(t!=='z'){const q=D.alintilar.find(x=>x.id===id);if(q&&q.okur&&D.okurAtla.indexOf(q.okur)<0)D.okurAtla.push(q.okur)}D[k]=D[k].filter(x=>x.id!==id);kaydet();kapat();ciz();geriAlToast('Silindi')},
   /* --- toplu yapıştırma --- */
   toplu:t=>{const z=t==='z',kats=z?ZKAT:AKAT,kat=z?U.zKat:U.aKat,vars=(kats.indexOf(kat)>-1)?kat:(z?'Dua':'Kendi notum');
     sheet('<h3><svg class="ic"><use href="#i-yapistir"/></svg>Toplu yapıştır — '+(z?'Zikirler':'Alıntılar')+'</h3>'+
@@ -1133,14 +1150,68 @@ function tamEkran(){
 function temaUygula(){const t=U.tema||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=(t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'#141816':'#f3f0e8'}
 
+/* ---------- 1.6: Milli Emlak köprüsü ----------
+   Uygulama Milli Emlak (Apps Script) içinden açıldığında kayıtlar Milli Emlak sunucusunda da tutulur;
+   böylece bilgisayar ve telefon arasında eşleşir. Tek başına açıldığında (GitHub/Claude) hiçbir etkisi yoktur. */
+function icImza(){try{return JSON.stringify(Object.assign({},D,{meta:null}))}catch(e){return ''}}
+const Kopru={hedef:null,koken:'*',bagli:false,_t:0,
+  bul(){try{if(window.opener&&window.opener!==window)return window.opener}catch(e){}try{if(window.parent&&window.parent!==window&&window.parent.location.origin===location.origin)return window.parent}catch(e){}return null},
+  basla(){this.hedef=this.bul();if(!this.hedef)return;addEventListener('message',e=>this.al(e));
+    this.yolla({tip:'mebut-hazir',son:(D.meta&&D.meta.son)||0,tohum:!!(D.meta&&D.meta.tohum),surum:SURUM})},
+  yolla(m){try{this.hedef&&this.hedef.postMessage(m,this.koken)}catch(e){}},
+  al(e){const m=e.data;if(!m||typeof m!=='object'||e.source!==this.hedef||String(m.tip||'').indexOf('mebut-')!==0)return;
+    if(m.tip==='mebut-veri'){this.koken=e.origin&&e.origin!=='null'?e.origin:'*';this.bagli=true;
+      const g=m.D&&typeof m.D==='object'?m.D:null,ys=(D.meta&&D.meta.son)||0,gs=(g&&g.meta&&g.meta.son)||0,tohum=!!(D.meta&&D.meta.tohum);
+      if(g&&(tohum||gs>ys)){D=onar(g);kaydet._son=icImza();try{localStorage.setItem(KEY,JSON.stringify(D))}catch(x){}
+        try{zSec();aSec()}catch(x){}ciz();toast(m.eski?'Milli Emlak’taki eski Bütçe kayıtları aktarıldı':'Milli Emlak’taki kayıtlar yüklendi')
+        if(m.eski)this.gonder(true)}
+      else if(!tohum&&(!g||ys>gs))this.gonder(true)}
+    else if(m.tip==='mebut-kaydedildi'){this.sonKayit=Date.now()}
+    else if(m.tip==='mebut-okur'){okurSenk(m.liste)}
+    if(m.ana&&typeof m.ana==='string'&&/^(https:|file:)/.test(m.ana)){U.anaAdres=m.ana;try{uiKaydet()}catch(x){}}
+    if(m.tip==='mebut-veri')setTimeout(()=>okurAl(),300)},
+  gonder(hemen){if(!this.bagli)return;clearTimeout(this._t);const f=()=>this.yolla({tip:'mebut-kaydet',D:JSON.parse(JSON.stringify(D))});if(hemen)f();else this._t=setTimeout(f,600)}
+};
+
+/* ---------- 1.7: Okur alıntıları ----------
+   Okur'da vurgulanan (alıntılanan) metinler "Okur" kategorisiyle buraya eklenir; aynı alıntı iki kez eklenmez,
+   burada silinen Okur alıntısı bir daha gelmez. Okur aynı adreste açılıyorsa (GitHub, yerel dosya) doğrudan okunur;
+   Milli Emlak içinden açılınca Milli Emlak aracılığıyla alınır. Okur'un verisine YAZILMAZ. */
+async function okurAlintiOku(){try{if(!window.indexedDB)return null;
+    if(indexedDB.databases){const l=await indexedDB.databases();if(!l.some(d=>d&&d.name==='okur-db'))return null}
+    const db=await new Promise((ok,red)=>{const r=indexedDB.open('okur-db');r.onupgradeneeded=()=>{try{r.transaction.abort()}catch(e){}};r.onsuccess=()=>ok(r.result);r.onerror=()=>red(r.error);r.onblocked=()=>red(new Error('blocked'))});
+    if(!db.objectStoreNames.contains('books')){db.close();return null}
+    const books=await new Promise((ok,red)=>{const q=db.transaction('books','readonly').objectStore('books').getAll();q.onsuccess=()=>ok(q.result||[]);q.onerror=()=>red(q.error)});db.close();
+    const out=[];books.forEach(b=>(b.annots||[]).forEach(a=>{if(a&&a.kind==='highlight'&&a.text&&String(a.text).trim())out.push({id:String(a.id),metin:String(a.text).replace(/\s+/g,' ').trim(),not:a.note||'',kitap:b.title||'',yazar:b.author||'',ts:a.ts||0})}));
+    return out}catch(e){return null}}
+function okurSenk(liste){if(!Array.isArray(liste)||!liste.length)return 0;let yeni=0,deg=0;
+  liste.slice().sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(o=>{if(!o||!o.id||!o.metin||D.okurAtla.indexOf(o.id)>-1)return;
+    const kaynak=[o.kitap,o.yazar].filter(Boolean).join(' — ');const x=D.alintilar.find(q=>q.okur===o.id);
+    if(x){if(x.metin!==o.metin||x.kaynak!==kaynak){x.metin=o.metin;x.kaynak=kaynak;deg++}return}
+    D.alintilar.unshift({id:yid('Q'),kat:'Okur',metin:o.metin,kaynak,fav:false,okur:o.id});yeni++});
+  if(yeni||deg){kaydet();if(U.tab==='alinti'||U.tab==='butce')ciz();if(yeni)toast('Okur’dan '+yeni+' yeni alıntı eklendi')}
+  return yeni}
+let _okurT=0;
+async function okurAl(){if(Date.now()-_okurT<4000)return;_okurT=Date.now();const l=await okurAlintiOku();if(l&&l.length){okurSenk(l);return}
+  if(Kopru.hedef)Kopru.yolla({tip:'mebut-okur-iste'})}
+/* ---------- 1.7: Ana sayfa (Milli Emlak) ---------- */
+function anaSayfa(){try{kaydet(true);Kopru.gonder(true)}catch(e){}
+  const ana=(U&&U.anaAdres)||'';let w=null;try{w=window.opener}catch(e){}
+  try{if(w&&!w.closed)w.focus()}catch(e){}
+  setTimeout(()=>{try{window.close()}catch(e){}setTimeout(()=>{if(!window.closed){if(ana)location.href=ana;else toast('Milli Emlak sekmesine geri dönün')}},250)},120)}
+function anaDugme(){const b=$('#anaBtn');if(b)b.hidden=!(Kopru.hedef||(U&&U.anaAdres))}
+
 /* ---------- Başlat ---------- */
 (function(){
   let u={};try{u=JSON.parse(localStorage.getItem(UKEY)||'{}')}catch(e){}
-  U={tab:SEKMELER.some(s=>s[0]===u.tab)?u.tab:'butce',tema:u.tema||'auto',suz:{},zKat:'hepsi',zAra:'',aKat:'hepsi',aAra:'',hf:'hepsi',zAcik:false,aAcik:false,duzen:null};
+  U={tab:SEKMELER.some(s=>s[0]===u.tab)?u.tab:'butce',tema:u.tema||'auto',suz:{},zKat:'hepsi',zAra:'',aKat:'hepsi',aAra:'',hf:'hepsi',zAcik:false,aAcik:false,duzen:null,anaAdres:typeof u.anaAdres==='string'?u.anaAdres:''};
   temaUygula();U.tamEkran=u.tamEkran!==false;
   document.addEventListener('pointerup',e=>{if(e.target&&e.target.closest&&e.target.closest('input[type=file],#yedekIn'))return;tamEkran()},{passive:true});
   tamEkran();
-  D=yukle();zSec();aSec();ciz();
+  D=yukle();kaydet._son=icImza();zSec();aSec();ciz();Kopru.basla();anaDugme();setTimeout(()=>okurAl(),1200);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')okurAl()});
+  /* test/destek erişimi (salt okunur + kaydet) */
+  window.__bh={D:()=>D,degistir:f=>{f(D);kaydet();ciz()},kopru:()=>({bagli:Kopru.bagli,sonKayit:Kopru.sonKayit||0})};
   $('#yedekIn').addEventListener('change',e=>{yedekYukle(e.target.files[0]);e.target.value=''});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){kapat();$('#hm').hidden=true}});
   window.addEventListener('pagehide',()=>kaydet(true));
