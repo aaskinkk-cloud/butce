@@ -440,6 +440,11 @@ body{font-size:16px}
 .sayac>.rkb small.tum{font-size:10.5px;vertical-align:baseline;margin:0;letter-spacing:-.2px}
 .sayac>.rkb.on{color:#c48a12!important;background:color-mix(in srgb,#d9a21b 12%,var(--kart))!important}
 .sayac.alintisat .bosluk{flex:1}
+
+/* 2.3: zikir ve alıntı bantlarında renkli şerit sağda */
+.band.c-zikir,.band.c-alis{border-left:1px solid var(--kenar)!important;border-right:5px solid var(--sf)!important}
+:root[data-theme="dark"] .band.c-zikir,:root[data-theme="dark"] .band.c-alis{border-right-color:color-mix(in srgb,var(--sf) 55%,#fff)!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .band.c-zikir,:root:not([data-theme="light"]) .band.c-alis{border-right-color:color-mix(in srgb,var(--sf) 55%,#fff)!important}}
 </style>
 </head>
 <body>
@@ -493,7 +498,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='2.2';
+const SURUM='2.3';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
