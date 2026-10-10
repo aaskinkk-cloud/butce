@@ -423,6 +423,23 @@ body{font-size:16px}
 .rbar .rkay button{border:0;background:transparent;padding:4px 10px;font-size:12.5px;color:var(--soluk)}
 .rbar .rkay button.on{background:var(--ana);color:#fff}
 .rbar .bosluk{flex:1}
+
+/* 2.2 */
+.band-ic{position:relative}
+.band-ic>.rys{position:absolute;top:8px;right:8px;min-width:36px;min-height:36px;font-size:22px;border-radius:10px}
+.zbas{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding-right:40px;margin-bottom:8px}
+.zbas .okuma-bas{margin:0}
+.kat.rk{margin:0;background:transparent;color:var(--sf,var(--ana));border:1px solid color-mix(in srgb,var(--sf,var(--ana)) 40%,transparent);font:700 10.5px/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:inset 0 0 0 999px color-mix(in srgb,var(--sf,var(--ana)) 7%,transparent)}
+.band-ic>.zbas:first-of-type:not(:has(.okuma-bas)){padding-right:40px}
+.sayac{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:6px!important;margin-top:12px!important}
+.sayac>.eksi,.sayac>.rkb,.sayac>.rsil{width:40px!important;height:40px!important;flex:0 0 40px!important;padding:0!important;margin:0!important;border-radius:12px!important;border:1px solid color-mix(in srgb,var(--sf,var(--kenar)) 30%,var(--kenar))!important;background:var(--kart)!important;color:var(--sf,var(--yazi))!important;display:inline-flex!important;align-items:center;justify-content:center;gap:1px;opacity:1!important;font:600 18px/1 system-ui!important;box-shadow:none!important}
+.sayac>.say{height:40px!important;border-radius:12px!important;border:1px solid color-mix(in srgb,var(--sf,var(--kenar)) 30%,var(--kenar))!important;font-size:19px!important;background:var(--bg)!important}
+.sayac>.rsil{color:color-mix(in srgb,var(--kirmizi) 70%,var(--soluk))!important}
+.sayac>.rsil .ic,.sayac>.eksi .ic{width:17px;height:17px}
+.sayac>.rkb small{font-size:9.5px;font-weight:800;align-self:flex-start;margin-top:7px}
+.sayac>.rkb small.tum{font-size:10.5px;vertical-align:baseline;margin:0;letter-spacing:-.2px}
+.sayac>.rkb.on{color:#c48a12!important;background:color-mix(in srgb,#d9a21b 12%,var(--kart))!important}
+.sayac.alintisat .bosluk{flex:1}
 </style>
 </head>
 <body>
@@ -476,7 +493,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='2.1';
+const SURUM='2.2';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -626,6 +643,8 @@ function toplamTazele(){
 /* Rastgele zikir & alıntı (bütçe her açıldığında yenilenir) */
 function rKay(t){try{const v=JSON.parse(localStorage.getItem('bh.rKay')||'{}')[t];return v==='hepsi'?'hepsi':'favori'}catch(e){return 'favori'}}
 function havuz(l){const t=l===D.zikirler?'z':'a';if(rKay(t)==='hepsi')return l;const f=l.filter(x=>x.fav);return f.length?f:l}
+function rYildiz(t,x){return '<button class="yildiz rys'+(x.fav?' on':'')+'" onclick="event.stopPropagation();A.fav(\''+t+'\',\''+x.id+'\')" aria-label="'+(x.fav?'Favorilerden çıkar':'Favorilere ekle')+'" title="'+(x.fav?'Favorilerden çıkar':'Favorilere ekle')+'">★</button>'}
+function rKayBtn(t){const k=rKay(t),nf=(t==='z'?D.zikirler:D.alintilar).filter(y=>y.fav).length;return '<button class="rkb'+(k==='favori'?' on':'')+'" onclick="event.stopPropagation();A.rKay(\''+t+'\',\''+(k==='favori'?'hepsi':'favori')+'\')" aria-label="Rastgele: '+(k==='favori'?'favorilerden ('+nf+')':'tümünden')+' · değiştirmek için dokun" title="Rastgele: '+(k==='favori'?'yalnız favorilerden':'tümünden')+' · dokun: değiştir">'+(k==='favori'?'★<small>'+nf+'</small>':'<small class="tum">Tümü</small>')+'</button>'}
 function rBarHtml(t,x){const k=rKay(t),nf=(t==='z'?D.zikirler:D.alintilar).filter(y=>y.fav).length;return '<div class="rbar"><button class="yildiz'+(x.fav?' on':'')+'" onclick="event.stopPropagation();A.fav(\''+t+'\',\''+x.id+'\')" aria-label="Favori" title="Favorilere ekle / çıkar">★</button><span class="rkay" role="group" aria-label="Rastgele hangi listeden"><button class="'+(k==='favori'?'on':'')+'" onclick="event.stopPropagation();A.rKay(\''+t+'\',\'favori\')">★ Favorilerden<small> '+nf+'</small></button><button class="'+(k==='hepsi'?'on':'')+'" onclick="event.stopPropagation();A.rKay(\''+t+'\',\'hepsi\')">Tümünden</button></span><span class="bosluk"></span>'+rSilHtml(t,x.id)+'</div>'}
 function zSec(){const l=havuz(D.zikirler);U.rz=l.length?rast(l).id:null}
 function aSec(){const l=havuz(D.alintilar);U.ra=l.length?rast(l).id:null}
@@ -642,13 +661,13 @@ function zBandHtml(){
   const z=D.zikirler.find(x=>x.id===U.rz);
   return '<div class="band c-zikir'+(U.zAcik?' acik':'')+'"><div class="band-bas" onclick="A.zBand()"><b><svg class="ic"><use href="#i-zikir"/></svg>ZİKİR ÇEK</b><span class="oz">'+esc(z?z.ad:'Zikir yok')+'</span>'+
     '<button class="zar" onclick="event.stopPropagation();A.zZar()" aria-label="Rastgele zikir çek" title="Rastgele zikir çek"><svg class="ic"><use href="#i-zikircek"/></svg></button></div>'+
-    '<div class="band-ic">'+(z?'<span class="kat">'+esc(z.kat)+'</span><h3 class="okuma-bas">'+esc(z.ad)+'</h3><p class="okuma">'+esc(z.metin)+'</p>'+sayacHtml(z,true,'')+rBarHtml('z',z):'<div class="bos">Zikir sekmesinden kayıt ekle</div>')+'</div></div>';
+    '<div class="band-ic">'+(z?rYildiz('z',z)+'<div class="zbas"><span class="kat rk">'+esc(z.kat)+'</span><h3 class="okuma-bas">'+esc(z.ad)+'</h3></div><p class="okuma">'+esc(z.metin)+'</p>'+sayacHtml(z,true,rKayBtn('z')+rSilHtml('z',z.id)):'<div class="bos">Zikir sekmesinden kayıt ekle</div>')+'</div></div>';
 }
 function aBandHtml(){
   const q=D.alintilar.find(x=>x.id===U.ra);if(!q)return '';
   return '<div class="band c-alis'+(U.aAcik?' acik':'')+'"><div class="band-bas" onclick="A.aBand()"><b><svg class="ic"><use href="#i-alinti"/></svg>ALINTI</b><span class="oz">'+esc(q.metin.split('\n')[0])+'</span>'+
     '<button class="zar" onclick="event.stopPropagation();A.aZar()" aria-label="Rastgele alıntı" title="Rastgele alıntı"><svg class="ic"><use href="#i-yenile"/></svg></button></div>'+
-    '<div class="band-ic"><p class="okuma">'+esc(q.metin)+'</p>'+(q.kaynak?'<div class="kaynak-sat"><div class="kaynak">— '+esc(q.kaynak)+'</div></div>':'')+rBarHtml('a',q)+'</div></div>';
+    '<div class="band-ic">'+rYildiz('a',q)+(q.kat?'<div class="zbas"><span class="kat rk">'+esc(q.kat)+'</span></div>':'')+'<p class="okuma">'+esc(q.metin)+'</p>'+(q.kaynak?'<div class="kaynak-sat"><div class="kaynak">— '+esc(q.kaynak)+'</div></div>':'')+'<div class="sayac alintisat"><span class="bosluk"></span>'+rKayBtn('a')+rSilHtml('a',q.id)+'</div></div></div>';
 }
 function butceHtml(){
   const a=ay();
@@ -1348,7 +1367,7 @@ const A={
     else{x.yazar=$('#e-yazar').value.trim();x.kitap=$('#e-kitap').value.trim();if(!x.yazar){const r=yazarAyikla(m,x.kitap);if(r.yazar){x.yazar=r.yazar;x.metin=r.metin;if(!x.kitap)x.kitap=r.kitap}}x.kaynak=kaynakYap(x)}
     U.duzen=null;U.yeni=null;kaydet();ciz();toast('Kaydedildi')},
   lVazgec:(t,id)=>{if(U.yeni===id){const k=t==='z'?'zikirler':'alintilar';D[k]=D[k].filter(x=>x.id!==id);kaydet()}U.duzen=null;U.yeni=null;ciz()},
-  rKay:(t,v)=>{let o={};try{o=JSON.parse(localStorage.getItem('bh.rKay')||'{}')}catch(e){}o[t]=v;try{localStorage.setItem('bh.rKay',JSON.stringify(o))}catch(e){}
+  rKay:(t,v)=>{let o={};try{o=JSON.parse(localStorage.getItem('bh.rKay')||'{}')}catch(e){}o[t]=v;try{localStorage.setItem('bh.rKay',JSON.stringify(o))}catch(e){}toast(v==='favori'?'Rastgele: yalnız favorilerden':'Rastgele: tümünden');
     if(v==='favori'&&!(t==='z'?D.zikirler:D.alintilar).some(x=>x.fav))toast('Henüz favori yok; ★ ile ekleyince yalnız onlardan gelir');
     if(t==='z')zSec();else aSec();const y=window.scrollY;ciz();window.scrollTo(0,y)},
   fav:(t,id)=>{const x=(t==='z'?D.zikirler:D.alintilar).find(y=>y.id===id);x.fav=!x.fav;kaydet();const y=window.scrollY;ciz();window.scrollTo(0,y)},
