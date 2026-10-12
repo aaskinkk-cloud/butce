@@ -41,7 +41,8 @@ Tüm veriler **yalnız bu cihazın tarayıcısında** saklanır; hiçbir sunucuy
 
 ## Sürüm
 
-**2.3** — Zikir ve alıntı bantlarında renkli şerit sağa alındı.  
+**2.4** — Arama motorları için sayfa bilgileri (başlık, açıklama, paylaşım önizlemesi); uygulama işleyişi aynı.  
+2.3 — Zikir ve alıntı bantlarında renkli şerit sağa alındı.  
 2.2 — Zikir/alıntı kartında ★ sağ üstte, kategori başlıkla aynı satırda, alt düğmeler tek satırda.  
 2.1 — Kalem taşıma yalnız basılı tutunca; rastgele zikir/alıntı favorilerden ya da tümünden; kesik çizgiler kaldırıldı.  
 2.0 — Sabit küçülen özet, bölümde Σ dahil/dışı, kalem sürükle/taşı/çoğalt.
