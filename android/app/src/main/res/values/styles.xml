@@ -1,0 +1,9 @@
+<resources>
+    <style name="Okur" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">#f3f0e8</item>
+        <item name="android:statusBarColor">#f3f0e8</item>
+        <item name="android:navigationBarColor">#f3f0e8</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+</resources>

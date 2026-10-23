@@ -1,5 +1,14 @@
 # Bütçe & Hedef
 
+## Android uygulaması (APK) — 23.10.2026
+**İndir:** https://github.com/aaskinkk-cloud/butce/releases/download/android/butce.apk
+
+- Kalıcı tam ekran (Android'in kendi yöntemi): alttaki tuşlar kaydırılınca sayfanın **üstüne biner**, sayfa kaymaz; Chrome'un tam ekran uyarısı ve "Dokunarak ara" paneli yoktur. Ön kamera bölgesi sayfanın renginde, içerik kameranın altından başlar. Ekran açık kalır.
+- Sayfa GitHub'daki Bütçe'dir; buraya gönderilen her güncelleme uygulamaya kendiliğinden gelir.
+- Dosya indirmeleri **İndirilenler** klasörüne kaydedilir; dosya seçimi telefonun dosya seçicisiyle yapılır.
+- Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
+- Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
+
 ## 2.9 (23.10.2026) — Tam ekran düğmesi geri
 - Kurulu uygulamada gizlenen tam ekran düğmesi yeniden görünür ve çalışır. Düğmeye basınca Chrome kendi "Tam ekrandan çıkmak için…" uyarısını bir kez gösterir (tarayıcı kuralı). Dokununca kendiliğinden tam ekran isteği gönderilmez.
 
