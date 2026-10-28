@@ -3,6 +3,7 @@
 ## Android uygulaması (APK) — 23.10.2026
 **İndir:** https://github.com/aaskinkk-cloud/butce/releases/download/android/butce.apk
 
+- 1.1 (28.10.2026): Okur uygulamasıyla aynı güncel kabuk — GitHub açılmazsa kendiliğinden Cloudflare yedeğinden (ahmet-uygulamalar.pages.dev/butce) açılır; simge: mavi zemin, sütun grafiği ve altın sikke.
 - Kalıcı tam ekran (Android'in kendi yöntemi): alttaki tuşlar kaydırılınca sayfanın **üstüne biner**, sayfa kaymaz; Chrome'un tam ekran uyarısı ve "Dokunarak ara" paneli yoktur. Ön kamera bölgesi sayfanın renginde, içerik kameranın altından başlar. Ekran açık kalır.
 - Sayfa GitHub'daki Bütçe'dir; buraya gönderilen her güncelleme uygulamaya kendiliğinden gelir.
 - Dosya indirmeleri **İndirilenler** klasörüne kaydedilir; dosya seçimi telefonun dosya seçicisiyle yapılır.

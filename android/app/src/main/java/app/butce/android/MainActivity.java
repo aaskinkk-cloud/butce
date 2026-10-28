@@ -27,13 +27,16 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 /**
- * Bütçe — Android kabuğu (Okur kabuğunun aynısı).
+ * Bütçe & Hedef — Android kabuğu (Okur kabuğunun aynısı).
  * Sayfa: https://aaskinkk-cloud.github.io/butce/ (GitHub'a gönderilen her güncelleme kendiliğinden gelir, çevrimdışı da açılır).
  * Ekran: kalıcı tam ekran (immersive). Alttaki tuşlar kaydırılınca sayfanın ÜSTÜNE biner, sayfa yeniden boyutlanmaz,
  * birkaç saniye sonra kendiliğinden gizlenir. Chrome'un "Tam ekrandan çıkmak için…" uyarısı ve "Dokunarak ara" paneli bu uygulamada yoktur.
  */
 public class MainActivity extends Activity {
     private static final String ADRES = "https://aaskinkk-cloud.github.io/butce/";
+    /** GitHub açılmazsa (404, sunucu hatası, bağlantı yok) sayfa buradan açılır. */
+    private static final String YEDEK = "https://ahmet-uygulamalar.pages.dev/butce/";
+    private boolean yedekte = false;
     private static final int DOSYA_SEC = 41;
     private WebView web;
     private ValueCallback<Uri[]> dosyaCb;
@@ -91,6 +94,12 @@ public class MainActivity extends Activity {
 
         web.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView v, String url) { v.evaluateJavascript(INDIR_JS, null); kameraYaz(); tamEkran(); }
+            @Override public void onReceivedHttpError(WebView v, android.webkit.WebResourceRequest r, android.webkit.WebResourceResponse res) {
+                if (r.isForMainFrame() && res != null && (res.getStatusCode() == 404 || res.getStatusCode() >= 500)) yedegeGec(v);
+            }
+            @Override public void onReceivedError(WebView v, android.webkit.WebResourceRequest r, android.webkit.WebResourceError e) {
+                if (r.isForMainFrame()) yedegeGec(v);
+            }
         });
         web.setWebChromeClient(new WebChromeClient() {
             @Override public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams p) {
@@ -156,6 +165,20 @@ public class MainActivity extends Activity {
         super.onActivityResult(req, res, d);
     }
 
+    /** GitHub sayfası açılmazsa bir kez Cloudflare kopyasına geçer; o da açılmazsa yeniden deneme ekranı gösterir. */
+    private void yedegeGec(WebView v) {
+        if (!yedekte) {
+            yedekte = true;
+            runOnUiThread(() -> { Toast.makeText(MainActivity.this, "GitHub açılmadı — yedek adresten (Cloudflare) açılıyor", Toast.LENGTH_LONG).show(); v.loadUrl(YEDEK); });
+        } else {
+            runOnUiThread(() -> v.loadDataWithBaseURL(null,
+                "<html><body style='font:18px sans-serif;background:#f3f0e8;color:#1f2421;padding:40px 24px;text-align:center'>"
+                + "<p>Bütçe şu an açılamıyor.<br>İnternet bağlantını kontrol et.</p>"
+                + "<p><a href='" + ADRES + "' style='display:inline-block;margin-top:16px;padding:14px 22px;border-radius:12px;background:#2f5d50;color:#fff;text-decoration:none'>Yeniden dene</a></p></body></html>",
+                "text/html", "utf-8", null));
+        }
+    }
+
     private void renkUygula(String c) {
         try {
             int r = android.graphics.Color.parseColor(c.trim());
@@ -169,7 +192,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void kaydet(String ad, String tur, String b64) {
             try {
                 byte[] veri = Base64.decode(b64, Base64.DEFAULT);
-                if (ad == null || ad.trim().isEmpty()) ad = "dosya";
+                if (ad == null || ad.trim().isEmpty()) ad = "butce-dosya";
                 if (Build.VERSION.SDK_INT >= 29) {
                     ContentValues cv = new ContentValues();
                     cv.put(MediaStore.Downloads.DISPLAY_NAME, ad);
@@ -195,6 +218,6 @@ public class MainActivity extends Activity {
         "(function(){if(window.__okurIndir)return;window.__okurIndir=1;var o=HTMLAnchorElement.prototype.click;" +
         "HTMLAnchorElement.prototype.click=function(){var h=this.href||'',ad=this.getAttribute('download');" +
         "if(ad!==null&&/^(blob:|data:)/.test(h)&&window.OkurAndroid){fetch(h).then(function(r){return r.blob()}).then(function(b){" +
-        "var f=new FileReader();f.onload=function(){var s=String(f.result),i=s.indexOf(',');OkurAndroid.kaydet(ad||'dosya',b.type||'',s.slice(i+1))};f.readAsDataURL(b)});return}" +
+        "var f=new FileReader();f.onload=function(){var s=String(f.result),i=s.indexOf(',');OkurAndroid.kaydet(ad||'butce-dosya',b.type||'',s.slice(i+1))};f.readAsDataURL(b)});return}" +
         "return o.apply(this,arguments)}})();";
 }
