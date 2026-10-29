@@ -90,6 +90,15 @@ main{max-width:760px;margin:0 auto;padding-block:14px 40px;padding-left:max(16px
 .ekle-satir{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px 14px;border-top:1px solid color-mix(in srgb,var(--c) 14%,var(--cizgi))}
 .ekle-satir .btn{border-color:color-mix(in srgb,var(--c) 40%,var(--cizgi));color:var(--c);min-width:0}
 :root:not([data-theme="light"]) .ekle-satir .btn{color:color-mix(in srgb,var(--c) 55%,var(--yazi))}
+.btn.dagit{width:100%;justify-content:center}
+.dsat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,46%);gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--cizgi)}
+.dsat:first-child{border-top:0}
+.dsat b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsat small{display:block;color:var(--soluk);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsat select{padding:8px 10px;border-left:6px solid var(--r)}
+.dliste{max-height:34vh;overflow:auto;border:1px solid var(--cizgi);border-radius:12px;padding:4px 12px;background:var(--zemin)}
+.dozet{display:flex;flex-wrap:wrap;gap:6px}
+.dozet span{font-size:12px;font-weight:600;padding:4px 9px;border-radius:99px;background:color-mix(in srgb,var(--r) 16%,var(--yuzey));border:1px solid var(--r)}
 .yeni-bolum{border:2px dashed var(--cizgi);background:transparent;border-radius:16px;min-height:56px;font-weight:700;color:var(--soluk);display:flex;align-items:center;justify-content:center;gap:8px}
 
 /* alt sayfa (sheet) */
@@ -154,6 +163,7 @@ textarea.inp{min-height:150px;resize:vertical}
       <button class="kare" data-act="menu" aria-label="Menü" title="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
     </div>
     <div class="ara"><svg class="ic"><use href="#i-ara"/></svg><input class="inp" id="ara" type="search" placeholder="Hesap, mail ya da not ara" autocomplete="off"></div>
+    <button class="btn dagit" data-act="dagit"><svg class="ic"><use href="#i-yapistir"/></svg>Toplu yapıştır — gruplara otomatik dağıt</button>
   </div></header>
   <main id="ana"></main>
 </div>
@@ -305,6 +315,36 @@ function satirCoz(sat){let p=sat.split(/\t|\s*[|;]\s*/).map(x=>x.trim()).filter(
   else if(p.length===2){o.kullanici=p[0];o.sifre=p[1]}
   else{o.baslik=p[0];o.kullanici=p[1]||'';o.sifre=p[2]||'';o.not=p.slice(3).join(' ')}
   return o}
+
+/* ===== Otomatik dağıtım: her satırı site / mail adresine göre bölüme yerleştirir ===== */
+const KAT=[
+  ['alisveris',/trendyol|hepsi ?burada|amazon|n11|temu|aliexpress|shein|getir|yemeksepeti|trendyol ?go|çiçek ?sepeti|cicek ?sepeti|sahibinden|letgo|dolap|migros|a101|bim\b|şok market|sok market|lc ?waikiki|lcw|koton|defacto|boyner|media ?markt|teknosa|vatan|pazarama|ikea|flo\b|idefix|d&r|kitapyurdu|gittigidiyor|ebay|etsy|morhipo|beymen|mavi\b|english home|watsons|gratis|rossmann|sephora|modanisa|evidea|koçtaş|koctas|bauhaus|ptt ?avm|alışveriş|alisveris|market/i],
+  ['banka',/banka|bankası|ziraat|vakıf|vakif|halkbank|halk bank|iş ?bank|isbank|işcep|garanti|bonus|akbank|yapı ?kredi|yapi ?kredi|ykb|world kart|qnb|finansbank|enpara|denizbank|kuveyt|albaraka|türkiye finans|turkiye finans|vakıf katılım|ziraat katılım|emlak katılım|ing\b|teb\b|şekerbank|sekerbank|fibabanka|odeabank|anadolubank|papara|ininal|tosla|paycell|param\b|paypal|wise|revolut|bkm|troy|kredi kart|borsa|midas|hisse|kripto|binance|btcturk|paribu|ödeme|odeme|fatura/i],
+  ['is',/mebis|takpas|belgenet|milli emlak|hazine|çşb|csb\b|kaymakam|valilik|detsis|ebys|dys\b|kbs\b|say2000|mys\b|kurum|ofis|iş maili|is maili|personel/i],
+  ['devlet',/e-?devlet|turkiye\.gov|türkiye\.gov|mhrs|e-?nabız|e-?nabiz|sgk|gib\b|ivd|interaktif vergi|vergi|uyap|e-?okul|eba\b|meb\b|ösym|osym|ais\b|nüfus|nufus|mernis|tapu|tkgm|web ?tapu|e-?imza|kep\b|ekap|hal\.gov|e-?sgk|emekli|işkur|iskur|ptt\b|tcdd|e-?yaygın|diyanet|belediye|\.gov\.tr|\.bel\.tr/i],
+  ['sosyal',/instagram|insta\b|facebook|fb\b|twitter|(?<![a-z0-9])x\.com|tiktok|youtube|whatsapp|telegram|linkedin|snapchat|pinterest|reddit|discord|threads|blogger|blogspot|tumblr|twitch|signal|bip\b|vk\b|quora|medium/i],
+  ['mail',/gmail|google hesab|yandex|hotmail|outlook|live\.com|msn|yahoo|icloud|proton|mail\.ru|yaani|e-?posta|eposta|mail/i]];
+const KAT_BOLUM={mail:/mail|posta|gmail/i,alisveris:/alış|alis|sepet|market/i,banka:/banka|ödeme|odeme|para/i,devlet:/devlet|resmi|kamu/i,is:/kurum|ofis|^\s*[iİ]ş(\s|\/|$)/,sosyal:/sosyal/i,diger:/diğer|diger/i};
+const MAIL_SAG=/^(gmail|googlemail|yandex|hotmail|outlook|live|msn|yahoo|icloud|me|proton|protonmail|mail|yaani)\./i;
+function katBul(o){const t1=[o.baslik,o.adres,o.not].join(' ').toLocaleLowerCase('tr'),metin=t1+' | '+t1.replace(/ı/g,'i'); /* MEBİS, INSTAGRAM gibi büyük harfli yazımlar da tanınsın */
+  for(const [k,r] of KAT){if(k==='mail')continue;if(r.test(metin))return k}
+  const dom=(String(o.kullanici).split('@')[1]||'').toLowerCase();
+  if(dom){if(/\.gov\.tr$|\.bel\.tr$|\.k12\.tr$/.test(dom))return 'is';
+    for(const [k,r] of KAT){if(k!=='mail'&&r.test(dom))return k}}
+  if(KAT[5][1].test(metin))return 'mail';
+  if(dom&&(!o.baslik||MAIL_SAG.test(dom)&&(!o.baslik||KAT[5][1].test(o.baslik)||o.baslik.toLowerCase()===dom.split('.')[0])))return 'mail';
+  return 'diger'}
+function bolumBul(k){const r=KAT_BOLUM[k];let b=r&&D.bolumler.find(x=>r.test(x.ad));
+  if(!b)b=D.bolumler.find(x=>KAT_BOLUM.diger.test(x.ad))||D.bolumler[D.bolumler.length-1];return b}
+let DAGIT=[];
+function dagitCoz(){DAGIT=topluCoz().map(o=>({o,bid:(bolumBul(katBul(o))||{}).id}));dagitCiz()}
+function dagitCiz(){const e=$('#dOn');if(!e)return;
+  if(!DAGIT.length){e.innerHTML='<div class="not">Önizleme: henüz satır yok</div>';return}
+  const say={};DAGIT.forEach(x=>say[x.bid]=(say[x.bid]||0)+1);
+  e.innerHTML='<div class="dozet">'+D.bolumler.filter(b=>say[b.id]).map(b=>'<span style="--r:'+(RENK[b.renk]||RENK.gri)[1]+'">'+esc(b.ad)+' · '+say[b.id]+'</span>').join('')+'</div>'+
+    '<div class="dliste">'+DAGIT.map((x,i)=>{const b=bol(x.bid);return '<div class="dsat"><div style="min-width:0"><b>'+esc(x.o.baslik||x.o.kullanici||'Adsız')+'</b><small>'+esc(x.o.kullanici||'—')+' · '+(x.o.sifre?'şifre var':'şifre yok')+'</small></div>'+
+      '<select class="inp" style="--r:'+(RENK[b&&b.renk]||RENK.gri)[1]+'" data-i="'+i+'" aria-label="Bölüm">'+D.bolumler.map(y=>'<option value="'+y.id+'"'+(y.id===x.bid?' selected':'')+'>'+esc(y.ad)+'</option>').join('')+'</select></div>'}).join('')+'</div>'+
+    '<div class="not">Yanlış gruba düşen satırın bölümünü yanındaki listeden değiştir.</div>'}
 function topluCoz(){return ($('#tMetin').value||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean).map(satirCoz)}
 function topluOnizle(){const l=topluCoz(),e=$('#tOn');if(!e)return;e.innerHTML=l.length?'<b>'+l.length+' kayıt</b> eklenecek:<br>'+l.slice(0,4).map((o,i)=>(i+1)+'. '+esc(o.baslik||'—')+' · '+esc(o.kullanici||'—')+' · '+(o.sifre?'şifre var':'<b>şifre yok</b>')).join('<br>')+(l.length>4?'<br>…':''):'Önizleme: henüz satır yok'}
 
@@ -371,11 +411,16 @@ document.addEventListener('click',async e=>{const t=e.target.closest('[data-act]
     case 'fGoster':{const i=$('#fSifre');i.type=i.type==='password'?'text':'password';break}
     case 'fUret':{const i=$('#fSifre');i.value=sifreUret(16);i.type='text';toast('16 karakterlik şifre üretildi');break}
     case 'toplu':{const b=bol(bid);sayfa('<h3><svg class="ic"><use href="#i-yapistir"/></svg>Toplu yapıştır — '+esc(b.ad)+'</h3><p class="not" style="margin:0">Her satır bir hesap. Örnekler:<br><span class="mono">ali.veli@gmail.com&nbsp;&nbsp;Şifre123</span><br><span class="mono">Trendyol | ali@gmail.com | Şifre123 | not</span><br>Sekme, | ya da ; ile ayırabilirsin. Yıldızlı (***) şifreler olduğu gibi eklenir, sonra düzenlersin.</p><textarea class="inp mono" id="tMetin" placeholder="Listeyi buraya yapıştır" autofocus></textarea><div class="onizle" id="tOn">Önizleme: henüz satır yok</div><div class="ikili"><button class="btn ana" data-act="tEkle" data-bid="'+bid+'">Bölüme ekle</button><button class="btn" data-act="kapat">Vazgeç</button></div>',(RENK[b.renk]||RENK.gri)[1]);$('#tMetin').addEventListener('input',topluOnizle);break}
+    case 'dagit':sayfa('<h3><svg class="ic"><use href="#i-yapistir"/></svg>Toplu yapıştır — otomatik dağıt</h3><p class="not" style="margin:0">Her satır bir hesap: <span class="mono">site | mail | şifre | not</span> ya da <span class="mono">mail şifre</span>. Sekme, | veya ; ile ayırırsan boşluklu şifreler de doğru okunur. Satırlar site ve mail adresine göre bölümlere dağıtılır; eklemeden önce değiştirebilirsin.</p><textarea class="inp mono" id="tMetin" placeholder="Listenin tamamını buraya yapıştır" autofocus style="min-height:110px"></textarea><div id="dOn"><div class="not">Önizleme: henüz satır yok</div></div><div class="ikili" style="position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--yuzey);padding-block:10px 18px;margin-bottom:-18px"><button class="btn ana" data-act="dEkle">Dağıt ve ekle</button><button class="btn" data-act="kapat">Vazgeç</button></div>');
+      {let zt=null;$('#tMetin').addEventListener('input',()=>{clearTimeout(zt);zt=setTimeout(dagitCoz,200)})}break;
+    case 'dEkle':{if(!DAGIT.length){toast('Eklenecek satır yok');break}anlik();let n=0,tek=0;const imza=k=>[k.baslik,k.kullanici,k.sifre].join('|').toLocaleLowerCase('tr');
+      DAGIT.forEach(x=>{const b=bol(x.bid);if(!b)return;if(b.kayitlar.some(k=>imza(k)===imza(x.o))){tek++;return}b.kayitlar.push(Object.assign({id:yid()},x.o));b.kapali=false;n++});
+      DAGIT=[];kaydet();kapat();ciz();geriAl(n+' kayıt dağıtıldı'+(tek?' · '+tek+' tekrar atlandı':''));break}
     case 'tEkle':{const b=bol(t.dataset.bid),l=topluCoz();if(!l.length){toast('Eklenecek satır yok');break}anlik();l.forEach(o=>b.kayitlar.push(Object.assign({id:yid()},o)));b.kapali=false;kaydet();kapat();ciz();geriAl(l.length+' kayıt eklendi — '+b.ad);break}
   }
 });
 $('#perde').addEventListener('click',kapat);
-document.addEventListener('change',e=>{if(e.target.id!=='gDosya'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const t=$('#gMetin');if(t)t.value=String(r.result).trim();const g=$('#gSifre');if(g)g.focus()};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{if(e.target.matches&&e.target.matches('.dsat select')){const x=DAGIT[+e.target.dataset.i];if(x){x.bid=e.target.value;dagitCiz()}return}if(e.target.id!=='gDosya'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{const t=$('#gMetin');if(t)t.value=String(r.result).trim();const g=$('#gSifre');if(g)g.focus()};r.readAsText(e.target.files[0])});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sayfa').hidden)kapat()});
 $('#ara').addEventListener('input',()=>{if(D)ciz()});
 

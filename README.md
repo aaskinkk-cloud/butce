@@ -11,6 +11,11 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.7 (29.10.2026) — Şifreler: toplu yapıştır, otomatik dağıt
+- Kasanın üstünde **Toplu yapıştır — gruplara otomatik dağıt** düğmesi: listenin tamamı yapıştırılır, her satır site adına ve mail adresine göre bölüme yerleşir (Gmail/Yandex/Hotmail → mail; Trendyol, Hepsiburada… → alışveriş; bankalar, Papara → banka; e-Devlet, MHRS, SGK… → resmi; MEBİS, TAKPAS, BelgeNet, .gov.tr adresleri → iş/kurum; Instagram, Facebook… → sosyal; tanınmayanlar → Diğer).
+- Eklemeden önce önizleme: bölüm başına sayı ve her satırın yanında bölüm seçici; yanlış düşeni değiştir. Aynı site + kullanıcı + şifre zaten varsa tekrar eklenmez; "Geri al" çalışır.
+- Bölüm adını değiştirsen de eşleşme ada göre yapılır (ör. adında "mail", "alış", "banka", "devlet", "kurum", "sosyal" geçmesi yeter).
+
 ## 3.6 (29.10.2026) — Şifre sayfası hep güncel gelir
 - `sifre.html` önce internetten yükleniyor (Bütçe sayfası gibi); telefonda kalan eski sürüm yüzünden kasa boş görünmez. İnternet yoksa son kaydedilen sürüm açılır.
 
