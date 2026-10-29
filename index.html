@@ -546,7 +546,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='3.7';
+const SURUM='3.8';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1603,7 +1603,10 @@ function okurSenk(liste){if(!Array.isArray(liste)||!liste.length)return 0;let ye
   if(yeni||deg){kaydet();if(U.tab==='alinti'||U.tab==='butce')ciz();if(yeni)toast('Okur’dan '+yeni+' yeni alıntı eklendi')}
   return yeni}
 let _okurT=0;
-async function okurAl(){if(Date.now()-_okurT<4000)return;_okurT=Date.now();const l=await okurAlintiOku();if(l&&l.length){okurSenk(l);return}
+async function okurAl(){if(Date.now()-_okurT<4000)return;_okurT=Date.now();
+  /* Android: Okur ayrı uygulama → alıntılar Okur uygulamasından istenir */
+  try{if(window.OkurAndroid&&OkurAndroid.okurAlintilari){const j=OkurAndroid.okurAlintilari();if(j){const l=JSON.parse(j);if(Array.isArray(l)&&l.length){okurSenk(l);return}}}}catch(e){}
+  const l=await okurAlintiOku();if(l&&l.length){okurSenk(l);return}
   if(Kopru.hedef)Kopru.yolla({tip:'mebut-okur-iste'})}
 /* ---------- 1.7: Ana sayfa (Milli Emlak) ---------- */
 function anaSayfa(){try{kaydet(true);Kopru.gonder(true)}catch(e){}

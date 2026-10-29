@@ -207,6 +207,13 @@ public class MainActivity extends Activity {
                 startActivity(Intent.createChooser(i, "Dosyayı aç"));
             } catch (Exception e) { Toast.makeText(MainActivity.this, "Bu dosyayı açacak uygulama yok; İndirilenler açılıyor", Toast.LENGTH_SHORT).show(); klasorAc(); }
         }); }
+        /** Okur uygulamasındaki vurguları JSON olarak verir; Okur kurulu değilse ya da eskiyse boş döner. */
+        @JavascriptInterface public String okurAlintilari() {
+            try (android.database.Cursor c = getContentResolver().query(Uri.parse("content://app.okur.android.alintilar"), null, null, null, null)) {
+                if (c != null && c.moveToFirst()) return c.getString(0);
+            } catch (Exception e) { }
+            return "";
+        }
         /** İndirilenler klasörünü açar. */
         @JavascriptInterface public void klasor() { runOnUiThread(() -> klasorAc()); }
         @JavascriptInterface public void kaydet(String ad, String tur, String b64) {

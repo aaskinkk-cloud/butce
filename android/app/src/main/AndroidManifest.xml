@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Okur uygulamasındaki vurguları (alıntıları) okuyabilmek için -->
+    <queries><provider android:authorities="app.okur.android.alintilar" /><package android:name="app.okur.android" /></queries>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

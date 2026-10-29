@@ -3,6 +3,7 @@
 ## Android uygulaması (APK) — 23.10.2026
 **İndir:** https://github.com/aaskinkk-cloud/butce/releases/download/android/butce.apk
 
+- 1.3 (29.10.2026): Okur uygulamasındaki alıntıları alır.
 - 1.2 (29.10.2026): Kaydettikten sonra "Dosyayı aç / Klasörü aç" sorusu.
 - 1.1 (28.10.2026): Okur uygulamasıyla aynı güncel kabuk — GitHub açılmazsa kendiliğinden Cloudflare yedeğinden (ahmet-uygulamalar.pages.dev/butce) açılır; simge: mavi zemin, sütun grafiği ve altın sikke.
 - Kalıcı tam ekran (Android'in kendi yöntemi): alttaki tuşlar kaydırılınca sayfanın **üstüne biner**, sayfa kaymaz; Chrome'un tam ekran uyarısı ve "Dokunarak ara" paneli yoktur. Ön kamera bölgesi sayfanın renginde, içerik kameranın altından başlar. Ekran açık kalır.
@@ -10,6 +11,11 @@
 - Dosya indirmeleri **İndirilenler** klasörüne kaydedilir; dosya seçimi telefonun dosya seçicisiyle yapılır.
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
+
+## 3.8 (29.10.2026) — Okur alıntıları Android'de yeniden geliyor
+- Okur ve Bütçe ayrı Android uygulamaları olduğu için Bütçe, Okur'daki vurguları göremiyordu. Bütçe uygulaması (1.3) artık alıntıları doğrudan **Okur uygulamasından** ister; Alıntılar sekmesine "Okur" kategorisiyle gelir. Yalnız Bütçe okuyabilir (imza denetimi).
+- Gerekenler: yeni **Okur** ve **Bütçe** APK'ları; güncellemeden sonra Okur'u bir kez açmak.
+- Chrome'da (aynı adreste) eski yol, Okur'un tarayıcı verisinden okuma, aynen sürüyor.
 
 ## 3.7 (29.10.2026) — Şifreler: toplu yapıştır, otomatik dağıt
 - Kasanın üstünde **Toplu yapıştır — gruplara otomatik dağıt** düğmesi: listenin tamamı yapıştırılır, her satır site adına ve mail adresine göre bölüme yerleşir (Gmail/Yandex/Hotmail → mail; Trendyol, Hepsiburada… → alışveriş; bankalar, Papara → banka; e-Devlet, MHRS, SGK… → resmi; MEBİS, TAKPAS, BelgeNet, .gov.tr adresleri → iş/kurum; Instagram, Facebook… → sosyal; tanınmayanlar → Diğer).
