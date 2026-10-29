@@ -11,6 +11,9 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.6 (29.10.2026) — Şifre sayfası hep güncel gelir
+- `sifre.html` önce internetten yükleniyor (Bütçe sayfası gibi); telefonda kalan eski sürüm yüzünden kasa boş görünmez. İnternet yoksa son kaydedilen sürüm açılır.
+
 ## 3.5 (29.10.2026) — Şifre Kasası boş sayfa düzeltmesi
 - Kasa açıldıktan sonra kilit ekranının yeri boş bir sayfa olarak kalıyor, kayıtlar aşağıya kayıyordu; kilit ekranı artık tamamen kalkıyor.
 
