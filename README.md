@@ -11,6 +11,13 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.3 (29.10.2026) — Şifreler sekmesi (Şifre Kasası)
+- Alt çubuğa **Şifreler** sekmesi eklendi. Ana şifreyle açılır; Gmail, Alışveriş, Banka & ödeme, e-Devlet & resmi, İş / kurum, Sosyal medya, Diğer bölümleri her biri ayrı renk ve simgeyle gelir. Bölüm ekle / adlandır / renk / sırala / sil; kayıt ekle, düzenle, başka bölüme taşı, toplu yapıştır; şifre göster, kopyala, güçlü şifre üret; arama.
+- **Güvenlik:** kayıtlar ana şifreden türetilen anahtarla (PBKDF2-SHA256 310.000 tur, AES-GCM 256) şifrelenir ve yalnız bu cihazda durur. Bütçe verisine girmez, Milli Emlak köprüsüne gönderilmez. Sekmeden çıkınca, 5 dk işlem olmayınca ya da 1 dk başka uygulamaya geçince kilitlenir. Ana şifre unutulursa kayıtlar açılamaz.
+- **Yedek:** Kasa menüsünden şifreli metin olarak kopyala ya da dosya olarak kaydet. Bütçe'nin **Yedek indir** dosyası da kasayı şifreli hâliyle içerir; geri yüklerken kasanın yerine konup konmayacağı sorulur.
+- Kasa ayrı sayfadır: `sifre.html`. Tek başına da açılır.
+- Düzeltme: 3.2 güncellemesinde `sw.js` (çevrimdışı çalışma dosyası) yanlışlıkla boş yüklenmişti; geri getirildi. İnternetsiz açılış yeniden çalışır.
+
 ## 3.2 (29.10.2026) — Silme onayı, kaydettikten sonra aç
 - **× ve çöp kutusu** ile tek kayıt silerken önce "Silmek istediğinizden emin misiniz?" sorulur (bütçe kalemi, fındık kalemi/geliri, düğün, hedef, zikir, alıntı). Onaydan sonra "Geri al" yine çalışır.
 - **Yedek indir** sonrası soru: *Dosyayı aç / Klasörü aç / Hayır*. Android uygulamasında dosya telefondaki uygun uygulamayla, klasör İndirilenler'de açılır. Chrome'da yalnız *Dosyayı aç* vardır (tarayıcı klasör açamaz).
@@ -58,6 +65,7 @@ Aylık bütçe, fındık sarfı, hedefler, düğün takıları, zikir ve alınt�
 | **Hedefler** | Biriktirme ve alım hedefleri |
 | **Düğünler** | Takılan/alınan takılar; yıl, kişi, yön ve türe göre bölümler |
 | **Zikir** | Zikir ve dualar, günlük sayaç, favoriler |
+| **Şifreler** | Ana şifreyle açılan şifreli kasa; renkli bölümler, kopyala/göster, toplu yapıştır |
 | **Alıntılar** | Alıntılar; kategori, yazar ve kitaba göre listeleme, toplu yapıştırmada yazar tanıma |
 
 Bütçe ekranında her açılışta rastgele bir zikir ve alıntı gelir (★ favorilerden ya da tümünden).

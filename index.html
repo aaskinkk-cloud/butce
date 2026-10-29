@@ -81,7 +81,8 @@ main{padding:0 12px 20px;max-width:880px;margin:0 auto}
 select.inp{padding-right:4px}
 .etiket{font-size:12px;color:var(--soluk);font-weight:600;display:block;margin-bottom:3px}
 /* sekmeler */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(6,1fr);background:var(--kart);border-top:1px solid var(--kenar);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
+.sifre-cer{position:fixed;left:0;right:0;width:100%;height:auto;border:0;z-index:1;background:var(--bg)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(7,1fr);background:var(--kart);border-top:1px solid var(--kenar);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
 .tabs button{border:0;background:none;border-radius:12px;padding:5px 0 4px;display:grid;justify-items:center;gap:1px;font-size:11.5px;font-weight:600;color:var(--soluk);min-height:54px}
 .tabs button span{font-size:21px;line-height:1.1}
 .tabs button.on{background:var(--ana2);color:var(--ana)}
@@ -503,6 +504,7 @@ body{font-size:16px}
 <symbol id="i-zikir" viewBox="0 0 24 24"><circle cx="12" cy="3.6" r="1.2"/><circle cx="16.6" cy="5.2" r="1.2"/><circle cx="18.6" cy="9.4" r="1.2"/><circle cx="16.6" cy="13.6" r="1.2"/><circle cx="7.4" cy="13.6" r="1.2"/><circle cx="5.4" cy="9.4" r="1.2"/><circle cx="7.4" cy="5.2" r="1.2"/><path d="M8.6 14.8 12 16.6l3.4-1.8"/><path d="M12 16.6v2"/><path d="M10.4 22 12 18.6l1.6 3.4"/></symbol>
 <symbol id="i-alinti" viewBox="0 0 24 24"><path d="M4.5 18c2.6-.6 4.5-2.7 4.5-5.6V7.5H4.5v5H9"/><path d="M15 18c2.6-.6 4.5-2.7 4.5-5.6V7.5H15v5h4.5"/></symbol>
 <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="2.8" width="14" height="18.4" rx="2.4"/><path d="M8.2 6.2h7.6v3.2H8.2z"/><path d="M8.6 13h.01M12 13h.01M15.4 13h.01M8.6 16.6h.01M12 16.6h.01M15.4 16.6h.01"/></symbol>
+<symbol id="i-sifre" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></symbol>
 <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4.5 7h15M4.5 12h15M4.5 17h9"/></symbol>
 <symbol id="i-gelir" viewBox="0 0 24 24"><rect x="2.8" y="6.5" width="18.4" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></symbol>
 <symbol id="i-maas" viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M8.8 7.5V5.8A1.8 1.8 0 0 1 10.6 4h2.8a1.8 1.8 0 0 1 1.8 1.8v1.7"/><path d="M3 12.5h18M10.5 12.5v1.6h3v-1.6"/></symbol>
@@ -528,7 +530,7 @@ body{font-size:16px}
 </defs>
 </svg>
 <header class="top">
-  <div class="brand"><b>Bütçe &amp; Hedef</b><small>Aylık bütçe · fındık sarfı · hedefler · zikir · alıntılar</small></div>
+  <div class="brand"><b>Bütçe &amp; Hedef</b><small>Aylık bütçe · fındık sarfı · hedefler · zikir · alıntılar · şifreler</small></div>
   <button class="ib" id="anaBtn" hidden onclick="anaSayfa()" aria-label="Ana sayfa (Milli Emlak)" title="Ana sayfa — Milli Emlak"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg></button>
   <button class="ib" onclick="A.hmAc()" aria-label="Hesap makinesi"><svg class="ic"><use href="#i-calc"/></svg></button>
   <button class="ib" onclick="A.menu()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
@@ -544,7 +546,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='3.2';
+const SURUM='3.3';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -636,7 +638,7 @@ function toast(msg,btn,fn){
 }
 function sheet(html){$('#sheet').innerHTML=html;$('#sheet').hidden=false;$('#scrim').hidden=false}
 function kapat(){$('#sheet').hidden=true;$('#scrim').hidden=true}
-const SEKMELER=[['butce','Bütçe','butce'],['findik','Fındık','findik'],['hedef','Hedefler','hedef'],['dugun','Düğünler','dugun'],['zikir','Zikir','zikir'],['alinti','Alıntılar','alinti']];
+const SEKMELER=[['butce','Bütçe','butce'],['findik','Fındık','findik'],['hedef','Hedefler','hedef'],['dugun','Düğünler','dugun'],['zikir','Zikir','zikir'],['alinti','Alıntılar','alinti'],['sifre','Şifreler','sifre']];
 function tabsCiz(){$('#tabs').innerHTML=SEKMELER.map(s=>'<button class="'+(U.tab===s[0]?'on':'')+'" onclick="A.sekme(\''+s[0]+'\')"><svg class="ic tab-ic"><use href="#i-'+s[2]+'"/></svg>'+s[1]+'</button>').join('')}
 function sekme(t){
   if(t===U.tab){window.scrollTo({top:0,behavior:'smooth'});return}
@@ -645,10 +647,26 @@ function sekme(t){
 }
 function ciz(){
   tabsCiz();
+  if(U.tab==='sifre'){sifreCiz();return}
   const f={butce:butceHtml,findik:findikHtml,hedef:hedefHtml,dugun:dugunHtml,zikir:zikirHtml,alinti:alintiHtml}[U.tab]||butceHtml;
   $('#v').innerHTML=f()+'<div class="surum">Bütçe &amp; Hedef · sürüm '+SURUM+'</div>';
   try{ozetKucult()}catch(e){}
 }
+
+/* ==================== ŞİFRELER (3.3) ====================
+   Şifre Kasası ayrı bir sayfadır (sifre.html) ve bu sekmede çerçeve içinde açılır.
+   Kayıtları Bütçe verisine (D) girmez, Milli Emlak köprüsüne gönderilmez: kendi anahtarında, ana şifreyle AES-256 şifreli durur.
+   Sekmeden çıkınca çerçeve kapanır → kasa kilitlenir. */
+const SIFRE_KEY='sifreKasasi.v1';
+function sifreBoyut(){const f=$('#sifreCer');if(!f)return;const h=document.querySelector('header.top'),t=$('#tabs');
+  f.style.top=Math.max(0,h?h.getBoundingClientRect().bottom:0)+'px';f.style.bottom=(t?t.getBoundingClientRect().height:0)+'px'}
+function sifreCiz(){
+  if($('#sifreCer')){sifreBoyut();return}  /* açık kasayı yeniden çizip kilitleme */
+  $('#v').innerHTML='<iframe id="sifreCer" class="sifre-cer" src="sifre.html" title="Şifre Kasası"></iframe>';
+  window.scrollTo(0,0);sifreBoyut();
+  $('#sifreCer').addEventListener('load',()=>{try{$('#sifreCer').contentWindow.butceTemasi()}catch(e){}});
+}
+window.addEventListener('resize',sifreBoyut);
 
 /* ==================== AYLIK BÜTÇE ==================== */
 const AYLAR=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
@@ -1010,17 +1028,27 @@ function yazdir(){
 }
 
 /* ==================== Yedek ==================== */
-function yedekIndir(){
-  const b=new Blob([JSON.stringify(D,null,1)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='butce-hedef-yedek-'+bugunISO()+'.json';document.body.appendChild(a);a.click();
-  const ad=a.download;if(U.sonBlob)try{URL.revokeObjectURL(U.sonBlob)}catch(e){}U.sonBlob=a.href;setTimeout(()=>a.remove(),1500);D.meta.yedek=Date.now();kaydet();kapat();
+/* Dosyayı İndirilenler'e kaydeder; sonra "aç / klasör" sorusu (Şifre Kasası da bunu kullanır) */
+function dosyaKaydet(ad,metin,tur){
+  const b=new Blob([metin],{type:tur||'application/octet-stream'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=ad;document.body.appendChild(a);a.click();
+  if(U.sonBlob)try{URL.revokeObjectURL(U.sonBlob)}catch(e){}U.sonBlob=a.href;setTimeout(()=>a.remove(),1500);
   if(!(window.OkurAndroid&&OkurAndroid.ac))setTimeout(()=>window.__kayitBitti(ad,false),400); /* Android uygulamasında soru, dosya yazılınca uygulamadan gelir */
+}
+window.__dosyaKaydet=dosyaKaydet;
+function yedekIndir(){
+  const y=JSON.parse(JSON.stringify(D));try{const k=localStorage.getItem(SIFRE_KEY);if(k)y.sifreKasasi=JSON.parse(k)}catch(e){} /* şifreli hâliyle */
+  D.meta.yedek=Date.now();kaydet();kapat();
+  dosyaKaydet('butce-hedef-yedek-'+bugunISO()+'.json',JSON.stringify(y,null,1),'application/json');
 }
 function yedekYukle(f){
   if(!f)return;const r=new FileReader();
   r.onload=()=>{let d;try{d=JSON.parse(r.result)}catch(e){toast('Dosya okunamadı: geçerli bir yedek değil');return}
     if(!d||!Array.isArray(d.aylar)){toast('Bu dosya Bütçe & Hedef yedeği değil');return}
     if(!confirm('Yedek yüklenecek. Şu anki tüm kayıtların yerini alacak.\n\nDevam edilsin mi?'))return;
+    const kasa=d.sifreKasasi;delete d.sifreKasasi;
+    if(kasa&&kasa.ct&&kasa.tuz){let var_=null;try{var_=localStorage.getItem(SIFRE_KEY)}catch(e){}
+      if(!var_||confirm('Yedekte Şifre Kasası da var. Bu cihazdaki kasanın yerine yedektekini koyayım mı?\n\n(Yedekteki kasa, yedeğin alındığı andaki ana şifreyle açılır.)'))try{localStorage.setItem(SIFRE_KEY,JSON.stringify(kasa));const c=$('#sifreCer');if(c)c.remove()}catch(e){}}
     anlik();D=onar(d);kaydet(true);zSec();aSec();ciz();kapat();geriAlToast('Yedek yüklendi')};
   r.readAsText(f);
 }
@@ -1528,6 +1556,7 @@ function tamEkran(){
   de.requestFullscreen({navigationUI:'hide'}).catch(()=>{});
 }
 function temaUygula(){const t=U.tema||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);
+  try{const c=document.getElementById('sifreCer');if(c&&c.contentWindow.butceTemasi)c.contentWindow.butceTemasi()}catch(e){}
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=(t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'#141816':'#f3f0e8'}
 
 /* ---------- 1.6: Milli Emlak köprüsü ----------
