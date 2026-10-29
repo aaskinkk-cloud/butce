@@ -1,6 +1,7 @@
 package app.butce.android;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import org.json.JSONObject;
 
 /**
  * Bütçe & Hedef — Android kabuğu (Okur kabuğunun aynısı).
@@ -38,6 +40,9 @@ public class MainActivity extends Activity {
     private static final String YEDEK = "https://ahmet-uygulamalar.pages.dev/butce/";
     private boolean yedekte = false;
     private static final int DOSYA_SEC = 41;
+    /** Son kaydedilen dosya (Dosyayı aç için). */
+    private Uri sonUri = null;
+    private String sonTur = "";
     private WebView web;
     private ValueCallback<Uri[]> dosyaCb;
     private android.widget.FrameLayout kap;
@@ -179,6 +184,11 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void klasorAc() {
+        try { startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); }
+        catch (Exception e) { Toast.makeText(this, "İndirilenler klasörü açılamadı", Toast.LENGTH_SHORT).show(); }
+    }
+
     private void renkUygula(String c) {
         try {
             int r = android.graphics.Color.parseColor(c.trim());
@@ -189,6 +199,16 @@ public class MainActivity extends Activity {
     /** Sayfadan gelen dosyaları (yedek, dışa aktarım) İndirilenler klasörüne yazar. */
     class Kopru {
         @JavascriptInterface public void renk(String c) { runOnUiThread(() -> renkUygula(c)); }
+        /** Son kaydedilen dosyayı telefondaki uygun uygulamayla açar. */
+        @JavascriptInterface public void ac() { runOnUiThread(() -> {
+            try {
+                if (sonUri == null) { klasorAc(); return; }
+                Intent i = new Intent(Intent.ACTION_VIEW).setDataAndType(sonUri, sonTur).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(i, "Dosyayı aç"));
+            } catch (Exception e) { Toast.makeText(MainActivity.this, "Bu dosyayı açacak uygulama yok; İndirilenler açılıyor", Toast.LENGTH_SHORT).show(); klasorAc(); }
+        }); }
+        /** İndirilenler klasörünü açar. */
+        @JavascriptInterface public void klasor() { runOnUiThread(() -> klasorAc()); }
         @JavascriptInterface public void kaydet(String ad, String tur, String b64) {
             try {
                 byte[] veri = Base64.decode(b64, Base64.DEFAULT);
@@ -199,12 +219,15 @@ public class MainActivity extends Activity {
                     cv.put(MediaStore.Downloads.MIME_TYPE, (tur == null || tur.isEmpty()) ? "application/octet-stream" : tur);
                     Uri u = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
                     try (OutputStream o = getContentResolver().openOutputStream(u)) { o.write(veri); }
+                    sonUri = u;
                 } else {
                     File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), ad);
                     try (FileOutputStream o = new FileOutputStream(f)) { o.write(veri); }
+                    sonUri = null;
                 }
-                final String m = ad;
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "İndirilenler'e kaydedildi: " + m, Toast.LENGTH_LONG).show());
+                sonTur = (tur == null || tur.isEmpty()) ? "*/*" : tur;
+                final String js = "window.__kayitBitti&&window.__kayitBitti(" + JSONObject.quote(ad) + ",true)";
+                runOnUiThread(() -> web.evaluateJavascript(js, null));
             } catch (Exception e) {
                 runOnUiThread(() -> Toast.makeText(MainActivity.this, "Kaydedilemedi: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }

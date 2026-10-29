@@ -3,12 +3,18 @@
 ## Android uygulaması (APK) — 23.10.2026
 **İndir:** https://github.com/aaskinkk-cloud/butce/releases/download/android/butce.apk
 
+- 1.2 (29.10.2026): Kaydettikten sonra "Dosyayı aç / Klasörü aç" sorusu.
 - 1.1 (28.10.2026): Okur uygulamasıyla aynı güncel kabuk — GitHub açılmazsa kendiliğinden Cloudflare yedeğinden (ahmet-uygulamalar.pages.dev/butce) açılır; simge: mavi zemin, sütun grafiği ve altın sikke.
 - Kalıcı tam ekran (Android'in kendi yöntemi): alttaki tuşlar kaydırılınca sayfanın **üstüne biner**, sayfa kaymaz; Chrome'un tam ekran uyarısı ve "Dokunarak ara" paneli yoktur. Ön kamera bölgesi sayfanın renginde, içerik kameranın altından başlar. Ekran açık kalır.
 - Sayfa GitHub'daki Bütçe'dir; buraya gönderilen her güncelleme uygulamaya kendiliğinden gelir.
 - Dosya indirmeleri **İndirilenler** klasörüne kaydedilir; dosya seçimi telefonun dosya seçicisiyle yapılır.
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
+
+## 3.2 (29.10.2026) — Silme onayı, kaydettikten sonra aç
+- **× ve çöp kutusu** ile tek kayıt silerken önce "Silmek istediğinizden emin misiniz?" sorulur (bütçe kalemi, fındık kalemi/geliri, düğün, hedef, zikir, alıntı). Onaydan sonra "Geri al" yine çalışır.
+- **Yedek indir** sonrası soru: *Dosyayı aç / Klasörü aç / Hayır*. Android uygulamasında dosya telefondaki uygun uygulamayla, klasör İndirilenler'de açılır. Chrome'da yalnız *Dosyayı aç* vardır (tarayıcı klasör açamaz).
+- Android 1.2: kayıttan sonra kısa bildirim yerine bu soru çıkar. Yeni APK'yı aynı bağlantıdan indirip üzerine kur; veriler silinmez.
 
 ## 3.1 (29.10.2026) — Düğün defteri eşitlendi
 - Verilen takı listesindeki **62 kayıt** (2019–2026) Düğünler sekmesine eklendi; liste tarihe göre sıralanır. Tarihsiz kayıt ("İbrahim Güney oğlu") en sonda.

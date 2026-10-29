@@ -544,7 +544,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='3.1';
+const SURUM='3.2';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1013,7 +1013,8 @@ function yazdir(){
 function yedekIndir(){
   const b=new Blob([JSON.stringify(D,null,1)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='butce-hedef-yedek-'+bugunISO()+'.json';document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);D.meta.yedek=Date.now();kaydet();kapat();toast('Yedek indirildi (İndirilenler klasörü)');
+  const ad=a.download;if(U.sonBlob)try{URL.revokeObjectURL(U.sonBlob)}catch(e){}U.sonBlob=a.href;setTimeout(()=>a.remove(),1500);D.meta.yedek=Date.now();kaydet();kapat();
+  if(!(window.OkurAndroid&&OkurAndroid.ac))setTimeout(()=>window.__kayitBitti(ad,false),400); /* Android uygulamasında soru, dosya yazılınca uygulamadan gelir */
 }
 function yedekYukle(f){
   if(!f)return;const r=new FileReader();
@@ -1494,6 +1495,29 @@ const A={
   ornek:()=>{if(!confirm('Örnek veriler yüklenecek ve şu anki TÜM kayıtların yerini alacak.\n\nÖnce yedek indirmen önerilir. Devam edilsin mi?'))return;anlik();D=seed();kaydet(true);zSec();aSec();kapat();ciz();geriAlToast('Örnek veriler yüklendi')},
   kapat
 };
+/* 3.2: Silmeden önce sor — × ve çöp kutusu düğmeleri; onaydan sonra eski "Geri al" da çalışır */
+let silBekle=null;
+const silAd={
+  kalemSil:(b,k)=>{const x=(bol(b)||{kalemler:[]}).kalemler.find(y=>y.id===k);return x&&x.ad},
+  fSil:id=>{const x=sezon().kalemler.find(y=>y.id===id);return x&&x.ad},
+  gSil:id=>{const x=sezon().gelir.find(y=>y.id===id);return x&&x.aciklama},
+  dSil:id=>{const x=D.dugun.kayitlar.find(y=>y.id===id);return x&&x.kisi},
+  hSil:id=>{const x=D.hedefler.find(y=>y.id===id);return x&&x.ad},
+  lSil:(t,id)=>{const x=(t==='z'?D.zikirler:D.alintilar).find(y=>y.id===id);return x&&(t==='z'?x.ad:x.metin)},
+  rSil:(t,id)=>{const x=(t==='z'?D.zikirler:D.alintilar).find(y=>y.id===id);return x&&(t==='z'?x.ad:x.metin)}};
+Object.keys(silAd).forEach(n=>{const f=A[n];if(typeof f!=='function')return;A[n]=function(){const g=arguments;let ad='';try{ad=String(silAd[n].apply(null,g)||'')}catch(e){}
+  if(ad.length>70)ad=ad.slice(0,70)+'…';silBekle=()=>f.apply(A,g);
+  sheet('<h3><svg class="ic"><use href="#i-sil"/></svg>Silinsin mi?</h3><p style="margin:4px 0 14px">'+(ad?'<b>“'+esc(ad)+'”</b> silinecek. ':'')+'Silmek istediğinizden emin misiniz?</p>'+
+    '<div class="satir"><button class="btn ana" style="flex:1;background:var(--kirmizi);border-color:var(--kirmizi)" onclick="A.silEvet()"><svg class="ic"><use href="#i-sil"/></svg>Evet, sil</button><button class="btn" style="flex:1" onclick="A.silHayir()">Vazgeç</button></div>')}});
+A.silEvet=()=>{const f=silBekle;silBekle=null;kapat();if(f)f()};
+A.silHayir=()=>{silBekle=null;kapat()};
+/* 3.2: Kaydettikten sonra "aç / klasöre git" sorusu */
+window.__kayitBitti=(ad,uygulama)=>{U.sonDosya=ad;
+  sheet('<h3><svg class="ic"><use href="#i-indir"/></svg>Kaydedildi</h3><p style="margin:4px 0 14px"><b>'+esc(ad)+'</b> İndirilenler klasörüne kaydedildi. Dosyayı ya da klasörü açmak ister misiniz?</p>'+
+    '<div class="satir"><button class="btn ana" style="flex:1" onclick="A.dosyaAc()">Dosyayı aç</button>'+(uygulama?'<button class="btn" style="flex:1" onclick="A.klasorAc()">Klasörü aç</button>':'')+'<button class="btn" style="flex:1" onclick="A.kapat()">Hayır</button></div>'+
+    (uygulama?'':'<div class="ipucu" style="margin-top:8px">Tarayıcıda klasör açılamaz; Chrome › ⋮ › İndirilenler\'den de ulaşabilirsin.</div>'))};
+A.dosyaAc=()=>{kapat();try{if(window.OkurAndroid&&OkurAndroid.ac){OkurAndroid.ac();return}}catch(e){}if(U.sonBlob)window.open(U.sonBlob,'_blank');else toast('Dosya açılamadı; İndirilenler klasörüne bak')};
+A.klasorAc=()=>{kapat();try{if(window.OkurAndroid&&OkurAndroid.klasor){OkurAndroid.klasor();return}}catch(e){}toast('Klasör yalnız Android uygulamasında açılabilir')};
 window.A=A;
 
 /* Tam ekran: tarayıcı ilk dokunuştan önce izin vermez; her dokunuşta gerekiyorsa açılır */
