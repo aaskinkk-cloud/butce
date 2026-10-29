@@ -11,6 +11,10 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.4 (29.10.2026) — Şifre sekmesi düzeltmesi
+- Şifre Kasası çerçevesi ekranın küçük bir kısmında kesik görünüyordu; artık üst başlıkla alt çubuk arasını tam dolduruyor (döndürmede de).
+- Alt çubuk adları kısaldı: Bütçe · Fındık · Hedef · Düğün · Zikir · Alıntı · Şifre.
+
 ## 3.3 (29.10.2026) — Şifreler sekmesi (Şifre Kasası)
 - Alt çubuğa **Şifreler** sekmesi eklendi. Ana şifreyle açılır; Gmail, Alışveriş, Banka & ödeme, e-Devlet & resmi, İş / kurum, Sosyal medya, Diğer bölümleri her biri ayrı renk ve simgeyle gelir. Bölüm ekle / adlandır / renk / sırala / sil; kayıt ekle, düzenle, başka bölüme taşı, toplu yapıştır; şifre göster, kopyala, güçlü şifre üret; arama.
 - **Güvenlik:** kayıtlar ana şifreden türetilen anahtarla (PBKDF2-SHA256 310.000 tur, AES-GCM 256) şifrelenir ve yalnız bu cihazda durur. Bütçe verisine girmez, Milli Emlak köprüsüne gönderilmez. Sekmeden çıkınca, 5 dk işlem olmayınca ya da 1 dk başka uygulamaya geçince kilitlenir. Ana şifre unutulursa kayıtlar açılamaz.

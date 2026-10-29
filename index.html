@@ -81,7 +81,7 @@ main{padding:0 12px 20px;max-width:880px;margin:0 auto}
 select.inp{padding-right:4px}
 .etiket{font-size:12px;color:var(--soluk);font-weight:600;display:block;margin-bottom:3px}
 /* sekmeler */
-.sifre-cer{position:fixed;left:0;right:0;width:100%;height:auto;border:0;z-index:1;background:var(--bg)}
+.sifre-cer{position:fixed;left:0;right:0;width:100%;height:60vh;display:block;border:0;z-index:1;background:var(--bg)}
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(7,1fr);background:var(--kart);border-top:1px solid var(--kenar);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
 .tabs button{border:0;background:none;border-radius:12px;padding:5px 0 4px;display:grid;justify-items:center;gap:1px;font-size:11.5px;font-weight:600;color:var(--soluk);min-height:54px}
 .tabs button span{font-size:21px;line-height:1.1}
@@ -546,7 +546,7 @@ body{font-size:16px}
 <script>
 (function(){
 'use strict';
-const SURUM='3.3';
+const SURUM='3.4';
 const KEY='butceHedef.v1',UKEY='butceHedef.ui';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -638,7 +638,7 @@ function toast(msg,btn,fn){
 }
 function sheet(html){$('#sheet').innerHTML=html;$('#sheet').hidden=false;$('#scrim').hidden=false}
 function kapat(){$('#sheet').hidden=true;$('#scrim').hidden=true}
-const SEKMELER=[['butce','Bütçe','butce'],['findik','Fındık','findik'],['hedef','Hedefler','hedef'],['dugun','Düğünler','dugun'],['zikir','Zikir','zikir'],['alinti','Alıntılar','alinti'],['sifre','Şifreler','sifre']];
+const SEKMELER=[['butce','Bütçe','butce'],['findik','Fındık','findik'],['hedef','Hedef','hedef'],['dugun','Düğün','dugun'],['zikir','Zikir','zikir'],['alinti','Alıntı','alinti'],['sifre','Şifre','sifre']];
 function tabsCiz(){$('#tabs').innerHTML=SEKMELER.map(s=>'<button class="'+(U.tab===s[0]?'on':'')+'" onclick="A.sekme(\''+s[0]+'\')"><svg class="ic tab-ic"><use href="#i-'+s[2]+'"/></svg>'+s[1]+'</button>').join('')}
 function sekme(t){
   if(t===U.tab){window.scrollTo({top:0,behavior:'smooth'});return}
@@ -659,11 +659,13 @@ function ciz(){
    Sekmeden çıkınca çerçeve kapanır → kasa kilitlenir. */
 const SIFRE_KEY='sifreKasasi.v1';
 function sifreBoyut(){const f=$('#sifreCer');if(!f)return;const h=document.querySelector('header.top'),t=$('#tabs');
-  f.style.top=Math.max(0,h?h.getBoundingClientRect().bottom:0)+'px';f.style.bottom=(t?t.getBoundingClientRect().height:0)+'px'}
+  const ust=Math.max(0,h?h.getBoundingClientRect().bottom:0),alt=t?t.getBoundingClientRect().height:0;
+  /* iframe, top+bottom ile kendiliğinden uzamaz (varsayılan 150 px); yüksekliği açıkça verilir */
+  f.style.top=ust+'px';f.style.height=Math.max(200,window.innerHeight-ust-alt)+'px'}
 function sifreCiz(){
   if($('#sifreCer')){sifreBoyut();return}  /* açık kasayı yeniden çizip kilitleme */
   $('#v').innerHTML='<iframe id="sifreCer" class="sifre-cer" src="sifre.html" title="Şifre Kasası"></iframe>';
-  window.scrollTo(0,0);sifreBoyut();
+  window.scrollTo(0,0);sifreBoyut();requestAnimationFrame(sifreBoyut);setTimeout(sifreBoyut,300);
   $('#sifreCer').addEventListener('load',()=>{try{$('#sifreCer').contentWindow.butceTemasi()}catch(e){}});
 }
 window.addEventListener('resize',sifreBoyut);
