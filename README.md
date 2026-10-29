@@ -10,6 +10,11 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.0 (29.10.2026) — Zikir listesine eklemeler
+- **31 yeni kayıt** (dua, niyet, olumlama, ayet, şifa, korunma) ve **1 alıntı** (Mecelle md. 4 — Hikmet) eklendi: haşere duası, nazar duası, kapı aç duası, iftar duası, Târık Sûresi, Fâtiha meali, Bakara 222, Zuhruf 79, Hıdırellez / anne bağı / değer (Yâ Habîb) niyetleri vb.
+- Eksik kalmış 9 kaydın metni tamamlandı (Bolluk niyeti, Sağlık olumlaması, Felak meali, Ahkâf 15, Evlat için…). **Senin değiştirdiğin kayıtlara dokunulmaz**; yalnız hiç düzenlenmemiş olanlar tamamlanır.
+- Eklemeler **telefondaki mevcut verine** de gelir: güncellemeden sonraki ilk açılışta bir kez eklenir, listenin sonuna düşer. Aynı metin zaten varsa eklenmez; sildiğin kayıt bir daha geri gelmez.
+
 ## 2.9 (23.10.2026) — Tam ekran düğmesi geri
 - Kurulu uygulamada gizlenen tam ekran düğmesi yeniden görünür ve çalışır. Düğmeye basınca Chrome kendi "Tam ekrandan çıkmak için…" uyarısını bir kez gösterir (tarayıcı kuralı). Dokununca kendiliğinden tam ekran isteği gönderilmez.
 
