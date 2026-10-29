@@ -10,6 +10,12 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.1 (29.10.2026) — Düğün defteri eşitlendi
+- Verilen takı listesindeki **62 kayıt** (2019–2026) Düğünler sekmesine eklendi; liste tarihe göre sıralanır. Tarihsiz kayıt ("İbrahim Güney oğlu") en sonda.
+- Mevcut kayıtlar silinmez; aynı kişi + tarih + tutar + tür zaten varsa yeniden eklenmez. Ekleme bir kez yapılır, sildiğin kayıt geri gelmez.
+- **Yeniden kurulumda varsayılan:** Uygulama sıfırdan kurulduğunda (veri yokken) tüm zikir/dua kayıtları (74) ve düğün kayıtları (63) kendiliğinden gelir.
+- Yorumlanan satırlar: "30 Temmuz" → 2023; Kemal Bilgin 22.06.**2022** → 2024 (dolar 32 TL o yıla ait); "100+300" → nişan 100 + düğün 300 iki kayıt; "Dolar" → Nakit USD; "çeyrek" → 1 Çeyrek Altın.
+
 ## 3.0 (29.10.2026) — Zikir listesine eklemeler
 - **31 yeni kayıt** (dua, niyet, olumlama, ayet, şifa, korunma) ve **1 alıntı** (Mecelle md. 4 — Hikmet) eklendi: haşere duası, nazar duası, kapı aç duası, iftar duası, Târık Sûresi, Fâtiha meali, Bakara 222, Zuhruf 79, Hıdırellez / anne bağı / değer (Yâ Habîb) niyetleri vb.
 - Eksik kalmış 9 kaydın metni tamamlandı (Bolluk niyeti, Sağlık olumlaması, Felak meali, Ahkâf 15, Evlat için…). **Senin değiştirdiğin kayıtlara dokunulmaz**; yalnız hiç düzenlenmemiş olanlar tamamlanır.
