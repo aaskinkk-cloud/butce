@@ -18,6 +18,8 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--zemin:#11161c;--yuzey:#1a2129;--yazi:#e8edf2;--soluk:#97a4b2;--cizgi:#2c3640;--vurgu:#e8edf2;--kirmizi:#f2766d;--iyi:#6cc394;--golge:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
 :root[data-theme="dark"]{--zemin:#11161c;--yuzey:#1a2129;--yazi:#e8edf2;--soluk:#97a4b2;--cizgi:#2c3640;--vurgu:#e8edf2;--kirmizi:#f2766d;--iyi:#6cc394;--golge:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important} /* kilit ekranı açıldıktan sonra boş alan bırakmasın */
+html,body{margin:0}
 html,body{min-height:100%}
 body{background:var(--zemin);color:var(--yazi);font:15px/1.45 var(--f-govde);-webkit-tap-highlight-color:transparent;outline:none}
 button,input,select,textarea{font:inherit;color:inherit}
