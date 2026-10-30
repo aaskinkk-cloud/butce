@@ -12,6 +12,13 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
+## 3.9 (30.10.2026) — Hedefler: Ürün · Adet · Birim fiyatı · Tutar, kişilere göre bölümler
+- Hedef satırı: **Ürün | Adet | Birim fiyatı | Tutar**. Tutar = adet × birim fiyatı (otomatik). Tutarı elle yazarsan birim fiyatı adetten geri hesaplanır. Eski kayıtlar adet 1, birim fiyatı = tutar olarak açılır.
+- Telefonda satır iki katlı: üstte ürün, altta adet / birim / tutar (sütun başlıklarıyla hizalı); geniş ekranda tek satır.
+- **Liste / Kişiler** seçimi: Kişiler görünümünde her kişi ayrı, açılır-kapanır renkli bölüm; başlıkta kalan ve toplam, altta Alınan/Kalan/Toplam, "+ X için ürün ekle". Kişisiz ürünler "Kişi belirtilmemiş" bölümünde. "+ Yeni kişi bölümü".
+- Kişi atama: listede ürünün yanındaki kişi rozeti ya da ⋯ menüsü › Kişi. Yukarı/aşağı taşıma kişi bölümünde kendi içinde çalışır.
+- Kopyala ve Yazdır: Kişi, Adet, Birim fiyatı sütunları; Kişiler görünümünde yazdırma kişi başlıklarıyla.
+
 ## 3.8 (29.10.2026) — Okur alıntıları Android'de yeniden geliyor
 - Okur ve Bütçe ayrı Android uygulamaları olduğu için Bütçe, Okur'daki vurguları göremiyordu. Bütçe uygulaması (1.3) artık alıntıları doğrudan **Okur uygulamasından** ister; Alıntılar sekmesine "Okur" kategorisiyle gelir. Yalnız Bütçe okuyabilir (imza denetimi).
 - Gerekenler: yeni **Okur** ve **Bütçe** APK'ları; güncellemeden sonra Okur'u bir kez açmak.
