@@ -12,12 +12,12 @@
 - Verisi Chrome'dakinden **ayrıdır**: ilk açılışta Chrome'daki sürümden **Yedek indir**, uygulamada **Yedekten geri yükle**.
 - Kaynak `android/`; APK'yı GitHub Actions derler. İmza anahtarı (`android/okur.jks`) sabittir: yeni sürüm eskisinin üzerine kurulur, veriler silinmez.
 
-## 3.9 (30.10.2026) — Hedefler: Ürün · Adet · Birim fiyatı · Tutar, kişilere göre bölümler
-- Hedef satırı: **Ürün | Adet | Birim fiyatı | Tutar**. Tutar = adet × birim fiyatı (otomatik). Tutarı elle yazarsan birim fiyatı adetten geri hesaplanır. Eski kayıtlar adet 1, birim fiyatı = tutar olarak açılır.
-- Telefonda satır iki katlı: üstte ürün, altta adet / birim / tutar (sütun başlıklarıyla hizalı); geniş ekranda tek satır.
-- **Liste / Kişiler** seçimi: Kişiler görünümünde her kişi ayrı, açılır-kapanır renkli bölüm; başlıkta kalan ve toplam, altta Alınan/Kalan/Toplam, "+ X için ürün ekle". Kişisiz ürünler "Kişi belirtilmemiş" bölümünde. "+ Yeni kişi bölümü".
-- Kişi atama: listede ürünün yanındaki kişi rozeti ya da ⋯ menüsü › Kişi. Yukarı/aşağı taşıma kişi bölümünde kendi içinde çalışır.
-- Kopyala ve Yazdır: Kişi, Adet, Birim fiyatı sütunları; Kişiler görünümünde yazdırma kişi başlıklarıyla.
+## 4.0 (30.10.2026) — Hedefler: her hedef ayrı bölüm, alındı tarihi
+- Satır düzeni: **Ürün | Adet | Birim fiyatı | Tutar**; tutar = adet × birim fiyatı (otomatik), tutar elle yazılırsa birim fiyatı geri hesaplanır. Eski kayıtlar adet 1, birim = tutar.
+- Görünüm seçimi (Alıntılar'daki seçiciyle aynı): **Liste** ya da **Her hedef ayrı bölüm**. Bölüm görünümünde her hedef kendi renkli kartında: başlıkta ad, bağlantı, ⋯; ortada Adet × Birim fiyatı = Tutar kutuları; altta Alınacak/Alındı onayı.
+- Onay işaretlenince **günün tarihi** kaydedilir ve gösterilir (listede satırın altında yeşil "Alındı" etiketi, bölümde onayın yanında); tarih dokunularak değiştirilebilir. Onay kaldırılınca tarih silinir.
+- Kopyala/Yazdır: Adet, Birim fiyatı, Alındı tarihi sütunları.
+- 3.9'daki kişi bölümleri kaldırıldı.
 
 ## 3.8 (29.10.2026) — Okur alıntıları Android'de yeniden geliyor
 - Okur ve Bütçe ayrı Android uygulamaları olduğu için Bütçe, Okur'daki vurguları göremiyordu. Bütçe uygulaması (1.3) artık alıntıları doğrudan **Okur uygulamasından** ister; Alıntılar sekmesine "Okur" kategorisiyle gelir. Yalnız Bütçe okuyabilir (imza denetimi).
